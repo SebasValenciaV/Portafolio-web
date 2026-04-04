@@ -14,7 +14,7 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse delay-1000" />
@@ -105,7 +105,7 @@ const Hero: React.FC = () => {
         <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold">Scroll</span>
         <div className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent" />
       </motion.div>
-    </section>
+    </div>
   );
 };
 

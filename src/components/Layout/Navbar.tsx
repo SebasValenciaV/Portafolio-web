@@ -30,6 +30,10 @@ const Navbar: React.FC = () => {
     { code: 'en', name: 'English' },
     { code: 'pt', name: 'Português' },
     { code: 'fr', name: 'Français' },
+    { code: 'it', name: 'Italiano' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'jp', name: '日本語' },
+    { code: 'zh', name: '中文' },
   ];
 
   return (

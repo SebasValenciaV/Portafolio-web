@@ -21,6 +21,18 @@ const Customizer: React.FC = () => {
     { name: 'Rose', value: '#f43f5e' },
     { name: 'Amber', value: '#f59e0b' },
     { name: 'Indigo', value: '#6366f1' },
+    { name: 'Cyan', value: '#06b6d4' },
+    { name: 'Teal', value: '#14b8a6' },
+    { name: 'Lime', value: '#84cc16' },
+    { name: 'Orange', value: '#f97316' },
+    { name: 'Pink', value: '#ec4899' },
+    { name: 'Fuchsia', value: '#d946ef' },
+    { name: 'Violet', value: '#8b5cf6' },
+    { name: 'Sky', value: '#0ea5e9' },
+    { name: 'Red', value: '#ef4444' },
+    { name: 'Slate', value: '#64748b' },
+    { name: 'Gold', value: '#d4af37' },
+    { name: 'Silver', value: '#c0c0c0' },
   ];
 
   return (
@@ -128,6 +140,23 @@ const Customizer: React.FC = () => {
                     )} />
                   </button>
                 </div>
+                {settings.visualEffects && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                      <span>Intensidad</span>
+                      <span>{settings.effectsIntensity}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="1"
+                      value={settings.effectsIntensity}
+                      onChange={(e) => updateSettings({ effectsIntensity: parseInt(e.target.value) })}
+                      className="w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Music Settings */}

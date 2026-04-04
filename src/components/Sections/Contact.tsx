@@ -22,8 +22,7 @@ const RecruitersAndContact: React.FC = () => {
 
   const socialLinks = [
     { name: 'GitHub', icon: <Github size={24} />, url: 'https://github.com/SebasValenciaV?tab=repositories' },
-    { name: 'LinkedIn', icon: <Linkedin size={24} />, url: '#' },
-    { name: 'Twitter', icon: <Twitter size={24} />, url: '#' },
+    { name: 'LinkedIn', icon: <Linkedin size={24} />, url: 'https://www.linkedin.com/in/sebastian-valencia-v-23506b243' },
   ];
 
   return (

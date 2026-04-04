@@ -7,17 +7,20 @@ const DynamicBackground: React.FC = () => {
 
   if (!settings.visualEffects) return null;
 
+  const intensity = settings.effectsIntensity / 100;
+
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
       {/* Dynamic Gradient Orbs */}
       <motion.div
         animate={{
-          x: [0, 100, 0],
-          y: [0, -100, 0],
-          scale: [1, 1.2, 1],
+          x: [0, 100 * intensity, 0],
+          y: [0, -100 * intensity, 0],
+          scale: [1, 1 + 0.2 * intensity, 1],
+          opacity: [0.3 * intensity, 0.6 * intensity, 0.3 * intensity],
         }}
         transition={{
-          duration: 20,
+          duration: 20 / (0.5 + intensity),
           repeat: Infinity,
           ease: "linear",
         }}
@@ -25,12 +28,13 @@ const DynamicBackground: React.FC = () => {
       />
       <motion.div
         animate={{
-          x: [0, -100, 0],
-          y: [0, 100, 0],
-          scale: [1, 1.5, 1],
+          x: [0, -100 * intensity, 0],
+          y: [0, 100 * intensity, 0],
+          scale: [1, 1 + 0.5 * intensity, 1],
+          opacity: [0.2 * intensity, 0.4 * intensity, 0.2 * intensity],
         }}
         transition={{
-          duration: 25,
+          duration: 25 / (0.5 + intensity),
           repeat: Infinity,
           ease: "linear",
         }}
@@ -38,12 +42,12 @@ const DynamicBackground: React.FC = () => {
       />
       <motion.div
         animate={{
-          x: [0, 50, 0],
-          y: [0, 50, 0],
-          opacity: [0.3, 0.6, 0.3],
+          x: [0, 50 * intensity, 0],
+          y: [0, 50 * intensity, 0],
+          opacity: [0.3 * intensity, 0.6 * intensity, 0.3 * intensity],
         }}
         transition={{
-          duration: 15,
+          duration: 15 / (0.5 + intensity),
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -52,15 +56,19 @@ const DynamicBackground: React.FC = () => {
 
       {/* Grid Pattern Overlay */}
       <div 
-        className="absolute inset-0 opacity-[0.03]" 
+        className="absolute inset-0" 
         style={{ 
+          opacity: 0.03 * intensity,
           backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
           backgroundSize: '40px 40px'
         }} 
       />
       
       {/* Noise Texture */}
-      <div className="absolute inset-0 opacity-[0.02] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+      <div 
+        className="absolute inset-0 mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" 
+        style={{ opacity: 0.02 * intensity }}
+      />
     </div>
   );
 };

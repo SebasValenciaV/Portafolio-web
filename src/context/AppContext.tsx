@@ -6,6 +6,7 @@ interface AppSettings {
   textColor: string;
   isDarkMode: boolean;
   visualEffects: boolean;
+  effectsIntensity: number; // 0 to 100
   musicEnabled: boolean;
   volume: number;
   language: Language;
@@ -30,6 +31,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       textColor: '#f8fafc',
       isDarkMode: true,
       visualEffects: true,
+      effectsIntensity: 50,
       musicEnabled: false,
       volume: 0.5,
       language: 'es',

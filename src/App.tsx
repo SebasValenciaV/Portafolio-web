@@ -18,6 +18,8 @@ import Customizer from './components/UI/Customizer';
 import MusicPlayer from './components/UI/MusicPlayer';
 import Chatbot from './components/UI/Chatbot';
 import DynamicBackground from './components/UI/DynamicBackground';
+import WhatsAppButton from './components/UI/WhatsAppButton';
+import FuturisticSection from './components/UI/FuturisticSection';
 
 export default function App() {
   return (
@@ -31,13 +33,13 @@ export default function App() {
 
         {/* Main Content */}
         <main>
-          <Hero />
-          <About />
-          <Portfolio />
-          <Tech />
-          <SectorsAndSolutions />
-          <ProcessAndReviews />
-          <RecruitersAndContact />
+          <FuturisticSection id="home"><Hero /></FuturisticSection>
+          <FuturisticSection id="about"><About /></FuturisticSection>
+          <FuturisticSection id="portfolio"><Portfolio /></FuturisticSection>
+          <FuturisticSection id="tech"><Tech /></FuturisticSection>
+          <FuturisticSection id="sectors"><SectorsAndSolutions /></FuturisticSection>
+          <FuturisticSection id="process"><ProcessAndReviews /></FuturisticSection>
+          <FuturisticSection id="contact"><RecruitersAndContact /></FuturisticSection>
         </main>
 
         {/* Footer */}
@@ -47,6 +49,7 @@ export default function App() {
         <Customizer />
         <MusicPlayer />
         <Chatbot />
+        <WhatsAppButton />
       </div>
     </AppProvider>
   );

@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="pt-24 pb-12 relative overflow-hidden border-t border-white/5 bg-slate-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Brand Column */}
           <div className="space-y-6">
             <div className="flex items-center gap-2">
@@ -32,11 +32,8 @@ const Footer: React.FC = () => {
               <a href="https://github.com/SebasValenciaV?tab=repositories" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all">
                 <Github size={20} />
               </a>
-              <a href="#" className="p-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all">
+              <a href="https://www.linkedin.com/in/sebastian-valencia-v-23506b243" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all">
                 <Linkedin size={20} />
-              </a>
-              <a href="#" className="p-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all">
-                <Twitter size={20} />
               </a>
             </div>
           </div>
@@ -72,21 +69,6 @@ const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Newsletter / CTA */}
-          <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Newsletter</h4>
-            <p className="text-slate-400 text-sm mb-4">Suscríbete para recibir noticias sobre tecnología y nuevos proyectos.</p>
-            <div className="flex p-1 rounded-xl glass border border-white/10">
-              <input
-                type="email"
-                placeholder="tu@email.com"
-                className="bg-transparent border-none outline-none px-4 py-2 text-sm text-white w-full"
-              />
-              <button className="p-2 rounded-lg bg-primary text-white hover:scale-105 transition-all">
-                <ArrowUp size={16} />
-              </button>
-            </div>
-          </div>
         </div>
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
