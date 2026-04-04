@@ -15,24 +15,53 @@ const Customizer: React.FC = () => {
   }, []);
 
   const colors = [
-    { name: 'Blue', value: '#3b82f6' },
-    { name: 'Purple', value: '#a855f7' },
-    { name: 'Emerald', value: '#10b981' },
-    { name: 'Rose', value: '#f43f5e' },
-    { name: 'Amber', value: '#f59e0b' },
-    { name: 'Indigo', value: '#6366f1' },
-    { name: 'Cyan', value: '#06b6d4' },
+    // Claros / Pasteles
+    { name: 'Rojo Claro', value: '#fca5a5' },
+    { name: 'Naranja Claro', value: '#fdba74' },
+    { name: 'Amarillo Claro', value: '#fde047' },
+    { name: 'Verde Claro', value: '#86efac' },
+    { name: 'Azul Claro', value: '#93c5fd' },
+    { name: 'Morado Claro', value: '#d8b4fe' },
+
+    // Vibrantes / Medios
+    { name: 'Rojo', value: '#ef4444' },
+    { name: 'Naranja', value: '#f97316' },
+    { name: 'Amarillo', value: '#eab308' },
+    { name: 'Verde', value: '#22c55e' },
+    { name: 'Azul', value: '#3b82f6' },
+    { name: 'Morado', value: '#a855f7' },
+
+    // Alternativos / Fríos
+    { name: 'Rosa', value: '#ec4899' },
+    { name: 'Fucsia', value: '#d946ef' },
+    { name: 'Índigo', value: '#6366f1' },
+    { name: 'Cian', value: '#06b6d4' },
     { name: 'Teal', value: '#14b8a6' },
-    { name: 'Lime', value: '#84cc16' },
-    { name: 'Orange', value: '#f97316' },
-    { name: 'Pink', value: '#ec4899' },
-    { name: 'Fuchsia', value: '#d946ef' },
-    { name: 'Violet', value: '#8b5cf6' },
-    { name: 'Sky', value: '#0ea5e9' },
-    { name: 'Red', value: '#ef4444' },
-    { name: 'Slate', value: '#64748b' },
-    { name: 'Gold', value: '#d4af37' },
-    { name: 'Silver', value: '#c0c0c0' },
+    { name: 'Esmeralda', value: '#10b981' },
+
+    // Oscuros / Profundos
+    { name: 'Rojo Oscuro', value: '#991b1b' },
+    { name: 'Naranja Oscuro', value: '#9a3412' },
+    { name: 'Amarillo Oscuro', value: '#854d0e' },
+    { name: 'Verde Oscuro', value: '#166534' },
+    { name: 'Azul Oscuro', value: '#1e40af' },
+    { name: 'Morado Oscuro', value: '#6b21a8' },
+
+    // Tonos Tierra y Neutros
+    { name: 'Rosa Oscuro', value: '#9d174d' },
+    { name: 'Cian Oscuro', value: '#155e75' },
+    { name: 'Teal Oscuro', value: '#115e59' },
+    { name: 'Lima', value: '#84cc16' },
+    { name: 'Oliva', value: '#3f6212' },
+    { name: 'Marrón', value: '#78350f' },
+
+    // Escala de Grises y Negro
+    { name: 'Blanco', value: '#ffffff' },
+    { name: 'Gris Claro', value: '#d1d5db' },
+    { name: 'Gris Medio', value: '#6b7280' },
+    { name: 'Gris Oscuro', value: '#374151' },
+    { name: 'Casi Negro', value: '#111827' },
+    { name: 'Negro', value: '#000000' },
   ];
 
   return (

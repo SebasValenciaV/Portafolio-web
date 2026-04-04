@@ -22,30 +22,37 @@ const About: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="relative"
+            style={{ perspective: 1000 }}
           >
-            <div className="relative z-10 rounded-3xl overflow-hidden glass-card p-2">
+            <motion.div 
+              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02, z: 20 }}
+              className="relative z-10 rounded-3xl overflow-hidden glass-card p-2"
+              style={{ transformStyle: 'preserve-3d' }}
+            >
               <img
                 src="https://picsum.photos/seed/tech/800/800"
                 alt="Tech Workspace"
                 className="rounded-2xl w-full h-full object-cover aspect-square grayscale hover:grayscale-0 transition-all duration-700"
                 referrerPolicy="no-referrer"
               />
-            </div>
+              <div 
+                className="absolute top-1/2 -right-8 glass p-6 rounded-2xl shadow-2xl border border-white/10 animate-float hidden md:block"
+                style={{ transform: 'translateZ(50px) translateY(-50%)' }}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl">
+                    10+
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Años de</p>
+                    <p className="text-sm font-bold text-white">Experiencia</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
             {/* Decorative Elements */}
             <div className="absolute -top-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
             <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
-            
-            <div className="absolute top-1/2 -right-8 glass p-6 rounded-2xl shadow-2xl border border-white/10 animate-float hidden md:block">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl">
-                  10+
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Años de</p>
-                  <p className="text-sm font-bold text-white">Experiencia</p>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           <motion.div

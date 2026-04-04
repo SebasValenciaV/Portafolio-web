@@ -47,7 +47,7 @@ const Tech: React.FC = () => {
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: 1000 }}>
           {techStack.map((stack, i) => (
             <motion.div
               key={i}
@@ -56,12 +56,25 @@ const Tech: React.FC = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
               className="glass-card p-8 rounded-[2rem] group hover:bg-primary/5 transition-all duration-500"
+              style={{ transformStyle: 'preserve-3d' }}
+              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02, z: 20 }}
             >
-              <div className="p-4 rounded-2xl bg-primary/10 w-fit mb-8 group-hover:scale-110 transition-transform">
+              <div 
+                className="p-4 rounded-2xl bg-primary/10 w-fit mb-8 group-hover:scale-110 transition-transform"
+                style={{ transform: 'translateZ(30px)' }}
+              >
                 {stack.icon}
               </div>
-              <h3 className="text-2xl font-bold text-white mb-6">{stack.category}</h3>
-              <div className="flex flex-wrap gap-3">
+              <h3 
+                className="text-2xl font-bold text-white mb-6"
+                style={{ transform: 'translateZ(20px)' }}
+              >
+                {stack.category}
+              </h3>
+              <div 
+                className="flex flex-wrap gap-3"
+                style={{ transform: 'translateZ(10px)' }}
+              >
                 {stack.skills.map((skill) => (
                   <span
                     key={skill}

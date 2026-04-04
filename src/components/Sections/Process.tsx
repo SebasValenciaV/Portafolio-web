@@ -112,7 +112,7 @@ const ProcessAndReviews: React.FC = () => {
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: 1000 }}>
           {reviews.map((review, i) => (
             <motion.div
               key={i}
@@ -121,14 +121,25 @@ const ProcessAndReviews: React.FC = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
               className="glass-card p-8 rounded-[2.5rem] relative group hover:bg-primary/5 transition-all duration-500"
+              style={{ transformStyle: 'preserve-3d' }}
+              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02, z: 20 }}
             >
-              <div className="absolute -top-4 -left-4 p-4 rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform">
+              <div 
+                className="absolute -top-4 -left-4 p-4 rounded-2xl bg-primary text-white shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform"
+                style={{ transform: 'translateZ(40px)' }}
+              >
                 <Quote size={24} />
               </div>
-              <p className="text-slate-400 italic mb-8 leading-relaxed pt-4">
+              <p 
+                className="text-slate-400 italic mb-8 leading-relaxed pt-4"
+                style={{ transform: 'translateZ(20px)' }}
+              >
                 "{review.comment}"
               </p>
-              <div className="flex items-center gap-4">
+              <div 
+                className="flex items-center gap-4"
+                style={{ transform: 'translateZ(30px)' }}
+              >
                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
                   {review.name.charAt(0)}
                 </div>

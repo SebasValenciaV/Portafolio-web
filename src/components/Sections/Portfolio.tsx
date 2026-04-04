@@ -56,7 +56,7 @@ const Portfolio: React.FC = () => {
           </motion.h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12" style={{ perspective: 1000 }}>
           {projects.map((project, i) => (
             <motion.div
               key={project.id}
@@ -65,15 +65,20 @@ const Portfolio: React.FC = () => {
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
               className="group relative"
+              style={{ transformStyle: 'preserve-3d' }}
+              whileHover={{ rotateX: 2, rotateY: -2, scale: 1.02, z: 20 }}
             >
-              <div className="relative overflow-hidden rounded-3xl glass-card p-4 aspect-[4/3] group-hover:shadow-2xl group-hover:shadow-primary/20 transition-all duration-500">
+              <div className="relative overflow-hidden rounded-3xl glass-card p-4 aspect-[4/3] group-hover:shadow-2xl group-hover:shadow-primary/20 transition-all duration-500" style={{ transformStyle: 'preserve-3d' }}>
                 <img
                   src={project.image}
                   alt={project.name}
                   className="w-full h-full object-cover rounded-2xl group-hover:scale-110 transition-transform duration-700 grayscale hover:grayscale-0"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                <div 
+                  className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8"
+                  style={{ transform: 'translateZ(30px)' }}
+                >
                   <div className="flex gap-4">
                     <button
                       onClick={() => setSelectedProject(project)}

@@ -75,51 +75,54 @@ const RecruitersAndContact: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
+            style={{ perspective: 1000 }}
           >
-            <span className="text-primary font-bold uppercase tracking-[0.2em] text-sm mb-4 block">
-              {t.contact.title}
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
-              Iniciemos tu próximo gran proyecto digital.
-            </h2>
-            <p className="text-lg text-slate-400 mb-12 leading-relaxed">
-              Estoy listo para ayudarte a transformar tus ideas en soluciones tecnológicas de alto impacto. Contáctame hoy mismo.
-            </p>
+            <motion.div style={{ transformStyle: 'preserve-3d' }} whileHover={{ rotateX: 2, rotateY: 2, scale: 1.02, z: 20 }}>
+              <span className="text-primary font-bold uppercase tracking-[0.2em] text-sm mb-4 block" style={{ transform: 'translateZ(10px)' }}>
+                {t.contact.title}
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight" style={{ transform: 'translateZ(20px)' }}>
+                Iniciemos tu próximo gran proyecto digital.
+              </h2>
+              <p className="text-lg text-slate-400 mb-12 leading-relaxed" style={{ transform: 'translateZ(15px)' }}>
+                Estoy listo para ayudarte a transformar tus ideas en soluciones tecnológicas de alto impacto. Contáctame hoy mismo.
+              </p>
 
-            <div className="space-y-8 mb-12">
-              <div className="flex items-center gap-6 group">
-                <div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                  <Phone size={24} />
+              <div className="space-y-8 mb-12" style={{ transform: 'translateZ(25px)' }}>
+                <div className="flex items-center gap-6 group">
+                  <div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                    <Phone size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Llámanos</p>
+                    <p className="text-xl font-bold text-white">+57 3168859466</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Llámanos</p>
-                  <p className="text-xl font-bold text-white">+57 3168859466</p>
+                <div className="flex items-center gap-6 group">
+                  <div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                    <Mail size={24} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Email</p>
+                    <p className="text-xl font-bold text-white">sebasvalenciav.gia@gmail.com</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-6 group">
-                <div className="p-4 rounded-2xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                  <Mail size={24} />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Email</p>
-                  <p className="text-xl font-bold text-white">sebasvalenciav.gia@gmail.com</p>
-                </div>
-              </div>
-            </div>
 
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-2xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all hover:-translate-y-1"
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
+              <div className="flex gap-4" style={{ transform: 'translateZ(30px)' }}>
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-4 rounded-2xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all hover:-translate-y-1 shadow-lg"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -128,8 +131,10 @@ const RecruitersAndContact: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="glass-card p-10 rounded-[2.5rem] border border-white/10 shadow-2xl"
+            style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
+            whileHover={{ rotateX: -2, rotateY: -2, scale: 1.02, z: 20 }}
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" style={{ transform: 'translateZ(30px)' }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-2">{t.contact.name}</label>
