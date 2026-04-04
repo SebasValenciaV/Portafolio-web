@@ -29,7 +29,7 @@ const SectorsAndSolutions: React.FC = () => {
   return (
     <div className="space-y-24 py-24">
       {/* Sectors Section */}
-      <section id="sectors" className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
@@ -69,10 +69,10 @@ const SectorsAndSolutions: React.FC = () => {
             </motion.div>
           ))}
         </div>
-      </section>
+      </div>
 
       {/* Solutions Section */}
-      <section id="services" className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
@@ -117,7 +117,7 @@ const SectorsAndSolutions: React.FC = () => {
             </motion.div>
           ))}
         </div>
-      </section>
+      </div>
     </div>
   );
 };

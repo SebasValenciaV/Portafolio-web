@@ -25,7 +25,7 @@ const Tech: React.FC = () => {
   ];
 
   return (
-    <section id="tech" className="py-24 relative overflow-hidden bg-slate-950/50">
+    <div className="py-24 relative overflow-hidden bg-slate-950/50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.span
@@ -95,7 +95,7 @@ const Tech: React.FC = () => {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

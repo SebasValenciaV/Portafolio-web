@@ -38,7 +38,7 @@ const ProcessAndReviews: React.FC = () => {
   return (
     <div className="space-y-24 py-24 bg-slate-950/50">
       {/* Process Section */}
-      <section id="process" className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
@@ -88,10 +88,10 @@ const ProcessAndReviews: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Reviews Section */}
-      <section id="reviews" className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.span
             initial={{ opacity: 0, y: 20 }}
@@ -140,7 +140,7 @@ const ProcessAndReviews: React.FC = () => {
             </motion.div>
           ))}
         </div>
-      </section>
+      </div>
     </div>
   );
 };

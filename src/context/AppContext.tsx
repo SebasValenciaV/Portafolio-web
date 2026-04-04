@@ -7,6 +7,7 @@ interface AppSettings {
   isDarkMode: boolean;
   visualEffects: boolean;
   effectsIntensity: number; // 0 to 100
+  effectsPaused: boolean;
   musicEnabled: boolean;
   volume: number;
   language: Language;
@@ -32,6 +33,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       isDarkMode: true,
       visualEffects: true,
       effectsIntensity: 50,
+      effectsPaused: false,
       musicEnabled: false,
       volume: 0.5,
       language: 'es',

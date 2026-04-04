@@ -34,7 +34,7 @@ const Portfolio: React.FC = () => {
   ];
 
   return (
-    <section id="projects" className="py-24 relative overflow-hidden">
+    <div className="py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.span
@@ -201,7 +201,7 @@ const Portfolio: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
-    </section>
+    </div>
   );
 };
 

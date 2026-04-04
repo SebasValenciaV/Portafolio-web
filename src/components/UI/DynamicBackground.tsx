@@ -8,50 +8,52 @@ const DynamicBackground: React.FC = () => {
   if (!settings.visualEffects) return null;
 
   const intensity = settings.effectsIntensity / 100;
+  const isPaused = settings.effectsPaused;
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
       {/* Dynamic Gradient Orbs */}
       <motion.div
-        animate={{
-          x: [0, 100 * intensity, 0],
-          y: [0, -100 * intensity, 0],
-          scale: [1, 1 + 0.2 * intensity, 1],
-          opacity: [0.3 * intensity, 0.6 * intensity, 0.3 * intensity],
+        animate={isPaused ? { opacity: 0.3 * intensity, scale: 1 } : {
+          x: [0, 150 * intensity, -50 * intensity, 100 * intensity, 0],
+          y: [0, -150 * intensity, 100 * intensity, -50 * intensity, 0],
+          scale: [1, 1 + 0.3 * intensity, 1 - 0.1 * intensity, 1 + 0.2 * intensity, 1],
+          opacity: [0.3 * intensity, 0.7 * intensity, 0.4 * intensity, 0.6 * intensity, 0.3 * intensity],
         }}
         transition={{
           duration: 20 / (0.5 + intensity),
           repeat: Infinity,
-          ease: "linear",
+          ease: "easeInOut",
         }}
-        className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full blur-[120px]"
+        className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/30 rounded-full blur-[120px]"
       />
       <motion.div
-        animate={{
-          x: [0, -100 * intensity, 0],
-          y: [0, 100 * intensity, 0],
-          scale: [1, 1 + 0.5 * intensity, 1],
-          opacity: [0.2 * intensity, 0.4 * intensity, 0.2 * intensity],
+        animate={isPaused ? { opacity: 0.2 * intensity, scale: 1 } : {
+          x: [0, -120 * intensity, 80 * intensity, -100 * intensity, 0],
+          y: [0, 120 * intensity, -60 * intensity, 100 * intensity, 0],
+          scale: [1, 1 + 0.6 * intensity, 1 - 0.2 * intensity, 1 + 0.4 * intensity, 1],
+          opacity: [0.2 * intensity, 0.5 * intensity, 0.2 * intensity, 0.4 * intensity, 0.2 * intensity],
         }}
         transition={{
           duration: 25 / (0.5 + intensity),
           repeat: Infinity,
-          ease: "linear",
+          ease: "easeInOut",
         }}
-        className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-primary/10 rounded-full blur-[150px]"
+        className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-primary/20 rounded-full blur-[150px]"
       />
       <motion.div
-        animate={{
-          x: [0, 50 * intensity, 0],
-          y: [0, 50 * intensity, 0],
-          opacity: [0.3 * intensity, 0.6 * intensity, 0.3 * intensity],
+        animate={isPaused ? { opacity: 0.3 * intensity, scale: 1 } : {
+          x: [0, 80 * intensity, -40 * intensity, 60 * intensity, 0],
+          y: [0, 80 * intensity, -40 * intensity, 60 * intensity, 0],
+          opacity: [0.3 * intensity, 0.8 * intensity, 0.4 * intensity, 0.7 * intensity, 0.3 * intensity],
+          scale: [1, 1.2 * intensity, 0.9 * intensity, 1.1 * intensity, 1],
         }}
         transition={{
           duration: 15 / (0.5 + intensity),
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[30%] right-[20%] w-[30%] h-[30%] bg-primary/15 rounded-full blur-[100px]"
+        className="absolute top-[30%] right-[20%] w-[30%] h-[30%] bg-primary/25 rounded-full blur-[100px]"
       />
 
       {/* Grid Pattern Overlay */}

@@ -23,9 +23,9 @@ const FuturisticSection: React.FC<FuturisticSectionProps> = ({ children, id, cla
           y: 0, 
           filter: 'blur(0px)',
           transition: {
-            duration: 0.8,
+            duration: 0.4,
             ease: [0.22, 1, 0.36, 1],
-            staggerChildren: 0.2
+            staggerChildren: 0.1
           }
         } : {}}
         className="relative"
@@ -35,7 +35,7 @@ const FuturisticSection: React.FC<FuturisticSectionProps> = ({ children, id, cla
           <motion.div
             initial={{ top: '0%' }}
             animate={{ top: '100%' }}
-            transition={{ duration: 1, ease: "linear" }}
+            transition={{ duration: 0.5, ease: "linear" }}
             className="absolute inset-0 z-20 pointer-events-none border-t-2 border-primary/30 bg-gradient-to-b from-primary/5 to-transparent h-1"
           />
         )}
@@ -44,7 +44,7 @@ const FuturisticSection: React.FC<FuturisticSectionProps> = ({ children, id, cla
         <motion.div
           initial={{ clipPath: 'inset(100% 0 0 0)' }}
           animate={inView ? { clipPath: 'inset(0% 0 0 0)' } : {}}
-          transition={{ duration: 0.8, ease: "circOut" }}
+          transition={{ duration: 0.4, ease: "circOut" }}
         >
           {children}
         </motion.div>

@@ -8,6 +8,7 @@ import { AppProvider } from './context/AppContext';
 import Navbar from './components/Layout/Navbar';
 import Hero from './components/Sections/Hero';
 import About from './components/Sections/About';
+import Dashboard from './components/Sections/Dashboard';
 import Portfolio from './components/Sections/Portfolio';
 import Tech from './components/Sections/Tech';
 import SectorsAndSolutions from './components/Sections/Sectors';
@@ -34,12 +35,13 @@ export default function App() {
         {/* Main Content */}
         <main>
           <FuturisticSection id="home"><Hero /></FuturisticSection>
-          <FuturisticSection id="about"><About /></FuturisticSection>
-          <FuturisticSection id="portfolio"><Portfolio /></FuturisticSection>
-          <FuturisticSection id="tech"><Tech /></FuturisticSection>
-          <FuturisticSection id="sectors"><SectorsAndSolutions /></FuturisticSection>
-          <FuturisticSection id="process"><ProcessAndReviews /></FuturisticSection>
-          <FuturisticSection id="contact"><RecruitersAndContact /></FuturisticSection>
+          <FuturisticSection id="about" className="-mt-12 relative z-10"><About /></FuturisticSection>
+          <FuturisticSection id="dashboard" className="-mt-12 relative z-20"><Dashboard /></FuturisticSection>
+          <FuturisticSection id="portfolio" className="-mt-12 relative z-10"><Portfolio /></FuturisticSection>
+          <FuturisticSection id="tech" className="-mt-12 relative z-20"><Tech /></FuturisticSection>
+          <FuturisticSection id="sectors" className="-mt-12 relative z-10"><SectorsAndSolutions /></FuturisticSection>
+          <FuturisticSection id="process" className="-mt-12 relative z-20"><ProcessAndReviews /></FuturisticSection>
+          <FuturisticSection id="contact" className="-mt-12 relative z-10"><RecruitersAndContact /></FuturisticSection>
         </main>
 
         {/* Footer */}

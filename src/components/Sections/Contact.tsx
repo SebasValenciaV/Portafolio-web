@@ -28,7 +28,7 @@ const RecruitersAndContact: React.FC = () => {
   return (
     <div className="space-y-24 py-24">
       {/* Recruiters Section */}
-      <section id="recruiters" className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -65,10 +65,10 @@ const RecruitersAndContact: React.FC = () => {
             </div>
           </div>
         </motion.div>
-      </section>
+      </div>
 
       {/* Contact Section */}
-      <section id="contact" className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -214,7 +214,7 @@ const RecruitersAndContact: React.FC = () => {
             </form>
           </motion.div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };

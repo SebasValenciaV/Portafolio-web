@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { X, Moon, Sun, Palette, Music, Volume2, Sparkles, Sliders } from 'lucide-react';
+import { X, Moon, Sun, Palette, Music, Volume2, Sparkles, Sliders, Play, Pause } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const Customizer: React.FC = () => {
@@ -141,7 +141,7 @@ const Customizer: React.FC = () => {
                   </button>
                 </div>
                 {settings.visualEffects && (
-                  <div className="space-y-2">
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                       <span>Intensidad</span>
                       <span>{settings.effectsIntensity}%</span>
@@ -155,6 +155,24 @@ const Customizer: React.FC = () => {
                       onChange={(e) => updateSettings({ effectsIntensity: parseInt(e.target.value) })}
                       className="w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-primary"
                     />
+                    <div className="flex items-center justify-between pt-2 border-t border-white/5">
+                      <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        {settings.effectsPaused ? <Pause size={14} /> : <Play size={14} />}
+                        Animaciones
+                      </div>
+                      <button
+                        onClick={() => updateSettings({ effectsPaused: !settings.effectsPaused })}
+                        className={cn(
+                          'w-12 h-6 rounded-full transition-all relative',
+                          !settings.effectsPaused ? 'bg-primary' : 'bg-white/10'
+                        )}
+                      >
+                        <div className={cn(
+                          'absolute top-1 w-4 h-4 rounded-full bg-white transition-all',
+                          !settings.effectsPaused ? 'left-7' : 'left-1'
+                        )} />
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
