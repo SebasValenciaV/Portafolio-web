@@ -21,6 +21,7 @@ import Chatbot from './components/UI/Chatbot';
 import DynamicBackground from './components/UI/DynamicBackground';
 import WhatsAppButton from './components/UI/WhatsAppButton';
 import FuturisticSection from './components/UI/FuturisticSection';
+import GameFloatingButton from './components/UI/GameFloatingButton';
 
 export default function App() {
   return (
@@ -52,6 +53,7 @@ export default function App() {
         <MusicPlayer />
         <Chatbot />
         <WhatsAppButton />
+        <GameFloatingButton />
       </div>
     </AppProvider>
   );
