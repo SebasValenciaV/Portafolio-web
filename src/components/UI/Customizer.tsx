@@ -44,7 +44,7 @@ const Customizer: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-[60] bg-slate-950/40 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-slate-900/40 dark:bg-slate-950/40 backdrop-blur-sm"
           />
           <motion.div
             initial={{ x: '100%' }}

@@ -25,7 +25,7 @@ const Tech: React.FC = () => {
   ];
 
   return (
-    <div className="py-24 relative overflow-hidden bg-slate-950/50">
+    <div className="py-24 relative overflow-hidden bg-slate-100/50 dark:bg-slate-950/50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
           <motion.span

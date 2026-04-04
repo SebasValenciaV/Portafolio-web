@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { Clock, Timer, Activity, TrendingUp, Cpu, Wifi, RefreshCw, MapPin } from 'lucide-react';
+import { Clock, Timer, Activity, TrendingUp, Cpu, Wifi, RefreshCw, MapPin, Download, Upload } from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -80,6 +80,8 @@ const Dashboard: React.FC = () => {
   const [isTesting, setIsTesting] = useState(false);
   const [latency, setLatency] = useState<number | null>(null);
   const [currentPing, setCurrentPing] = useState<number | null>(null);
+  const [downloadSpeed, setDownloadSpeed] = useState<number | null>(null);
+  const [uploadSpeed, setUploadSpeed] = useState<number | null>(null);
   const [testProgress, setTestProgress] = useState(0);
   const [location, setLocation] = useState<string>('Buscando ubicación...');
 
@@ -116,6 +118,8 @@ const Dashboard: React.FC = () => {
     setIsTesting(true);
     setLatency(null);
     setCurrentPing(0);
+    setDownloadSpeed(null);
+    setUploadSpeed(null);
     setTestProgress(0);
     
     const duration = 5000;
@@ -130,6 +134,12 @@ const Dashboard: React.FC = () => {
         const avg = pings.length ? Math.round(pings.reduce((a, b) => a + b, 0) / pings.length) : 0;
         setLatency(avg);
         setCurrentPing(avg);
+        
+        // Simular velocidades de carga y descarga basadas en la latencia
+        const baseSpeed = avg < 50 ? 150 : avg < 100 ? 80 : 20;
+        setDownloadSpeed(Math.round((baseSpeed + Math.random() * 20) * 10) / 10);
+        setUploadSpeed(Math.round((baseSpeed * 0.4 + Math.random() * 10) * 10) / 10);
+        
         setTestProgress(100);
         setIsTesting(false);
         return;
@@ -250,7 +260,7 @@ const Dashboard: React.FC = () => {
               <Cpu size={48} className="text-primary" />
             </div>
             <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">Estado IA</p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-1">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
@@ -259,9 +269,15 @@ const Dashboard: React.FC = () => {
                 Óptimo
               </p>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-slate-500 mb-4">
               Sistemas en línea
             </p>
+            <button
+              onClick={() => window.dispatchEvent(new Event('open-chatbot'))}
+              className="px-4 py-1.5 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors"
+            >
+              Abrir Chat
+            </button>
           </motion.div>
 
           {/* Network Widget (Manual Test) */}
@@ -286,7 +302,7 @@ const Dashboard: React.FC = () => {
             
             <div className="relative flex flex-col items-center mb-1">
               <svg width="100" height="55" viewBox="0 0 100 55" className="overflow-visible">
-                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" strokeLinecap="round" />
+                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke={settings.isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(15,23,42,0.1)"} strokeWidth="8" strokeLinecap="round" />
                 <path 
                   d="M 10 50 A 40 40 0 0 1 90 50" 
                   fill="none" 
@@ -306,12 +322,27 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="h-4 mb-3">
+            <div className="h-4 mb-2">
               {(latency !== null || isTesting) && (
                 <span className="text-xs font-bold" style={{ color: getLatencyColor(currentPing || latency) }}>
                   {isTesting ? 'Midiendo...' : getLatencyStatus(latency)}
                 </span>
               )}
+            </div>
+            
+            <div className="flex w-full justify-between px-2 mb-3">
+              <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1 text-[10px] text-slate-400 uppercase">
+                  <Download size={10} /> Descarga
+                </div>
+                <span className="text-sm font-bold text-white">{downloadSpeed !== null ? downloadSpeed : '--'} <span className="text-[10px] text-slate-500">Mbps</span></span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1 text-[10px] text-slate-400 uppercase">
+                  <Upload size={10} /> Carga
+                </div>
+                <span className="text-sm font-bold text-white">{uploadSpeed !== null ? uploadSpeed : '--'} <span className="text-[10px] text-slate-500">Mbps</span></span>
+              </div>
             </div>
             
             <button 
@@ -350,9 +381,9 @@ const Dashboard: React.FC = () => {
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={techGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="year" stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={settings.isDarkMode ? "rgba(255,255,255,0.05)" : "rgba(15,23,42,0.05)"} vertical={false} />
+                  <XAxis dataKey="year" stroke={settings.isDarkMode ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)"} fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke={settings.isDarkMode ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)"} fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                     content={<CustomBarTooltip />}
@@ -389,9 +420,9 @@ const Dashboard: React.FC = () => {
                       <stop offset="95%" stopColor={settings.themeColor} stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis dataKey="year" stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={settings.isDarkMode ? "rgba(255,255,255,0.05)" : "rgba(15,23,42,0.05)"} vertical={false} />
+                  <XAxis dataKey="year" stroke={settings.isDarkMode ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)"} fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke={settings.isDarkMode ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)"} fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip content={<CustomAreaTooltip />} />
                   <Area type="monotone" dataKey="value" stroke={settings.themeColor} strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
                 </AreaChart>

@@ -11,7 +11,7 @@ const DynamicBackground: React.FC = () => {
   const isPaused = settings.effectsPaused;
 
   return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-slate-950">
+    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       {/* Dynamic Gradient Orbs */}
       <motion.div
         animate={isPaused ? { opacity: 0.6 * intensity, scale: 1 } : {

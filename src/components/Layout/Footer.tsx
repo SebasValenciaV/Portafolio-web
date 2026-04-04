@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="pt-24 pb-12 relative overflow-hidden border-t border-white/5 bg-slate-950/80 backdrop-blur-md">
+    <footer className="pt-24 pb-12 relative overflow-hidden border-t border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Brand Column */}

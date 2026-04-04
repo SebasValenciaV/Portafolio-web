@@ -36,7 +36,7 @@ const ProcessAndReviews: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-24 py-24 bg-slate-950/50">
+    <div className="space-y-24 py-24 bg-slate-100/50 dark:bg-slate-950/50">
       {/* Process Section */}
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-20">
@@ -74,7 +74,7 @@ const ProcessAndReviews: React.FC = () => {
                 className="relative z-10 flex flex-col items-center text-center group"
               >
                 <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${step.color} p-0.5 mb-6 group-hover:scale-110 transition-transform duration-500 shadow-2xl shadow-primary/20`}>
-                  <div className="w-full h-full rounded-[1.4rem] bg-slate-950 flex items-center justify-center text-white">
+                  <div className="w-full h-full rounded-[1.4rem] bg-white dark:bg-slate-950 flex items-center justify-center text-slate-900 dark:text-white">
                     {step.icon}
                   </div>
                 </div>

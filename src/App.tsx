@@ -25,7 +25,7 @@ import FuturisticSection from './components/UI/FuturisticSection';
 export default function App() {
   return (
     <AppProvider>
-      <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-primary/30 selection:text-primary transition-colors duration-500">
+      <div className="min-h-screen transition-colors duration-500">
         {/* Dynamic Background */}
         <DynamicBackground />
 

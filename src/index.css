@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --color-primary: var(--theme-primary, #3b82f6);
@@ -18,22 +20,22 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-50 selection:bg-primary/30 selection:text-primary transition-colors duration-500;
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 selection:bg-primary/30 selection:text-primary transition-colors duration-500;
     font-family: var(--font-sans);
   }
 }
 
 @layer components {
   .glass {
-    @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl;
+    @apply backdrop-blur-xl bg-slate-900/5 border border-slate-900/10 dark:bg-white/5 dark:border-white/10 shadow-2xl;
   }
   
   .glass-card {
-    @apply backdrop-blur-md bg-white/5 border border-white/10 hover:border-primary/50 transition-all duration-300;
+    @apply backdrop-blur-md bg-slate-900/5 border border-slate-900/10 hover:border-primary/50 dark:bg-white/5 dark:border-white/10 dark:hover:border-primary/50 transition-all duration-300;
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-white/50;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-800 to-slate-600 dark:from-white dark:via-white/80 dark:to-white/50;
   }
   
   .primary-gradient {
@@ -47,11 +49,49 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-950;
+  @apply bg-slate-200 dark:bg-slate-950;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-primary/50 transition-colors;
+  @apply bg-slate-400 dark:bg-white/10 rounded-full hover:bg-primary/50 transition-colors;
+}
+
+/* Light Mode Overrides */
+html:not(.dark) .text-white:not(.bg-primary, .bg-primary *, .bg-\\[\\#25D366\\], .bg-\\[\\#25D366\\] *) {
+  color: #0f172a;
+}
+html:not(.dark) .text-slate-400:not(.bg-primary, .bg-primary *) {
+  color: #475569;
+}
+html:not(.dark) .text-slate-300:not(.bg-primary, .bg-primary *) {
+  color: #334155;
+}
+html:not(.dark) .text-slate-500:not(.bg-primary, .bg-primary *) {
+  color: #64748b;
+}
+html:not(.dark) .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.05);
+}
+html:not(.dark) .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.1);
+}
+html:not(.dark) .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.05);
+}
+html:not(.dark) .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.1);
+}
+html:not(.dark) .border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.2);
+}
+html:not(.dark) .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.05);
+}
+html:not(.dark) .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.1);
+}
+html:not(.dark) .hover\:text-white:hover:not(.bg-primary, .bg-primary *) {
+  color: #0f172a;
 }
 
 /* Animations */
@@ -63,4 +103,5 @@
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
+
 
