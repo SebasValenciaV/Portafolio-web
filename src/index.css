@@ -31,7 +31,16 @@
   }
   
   .glass-card {
-    @apply backdrop-blur-md bg-slate-900/5 border border-slate-900/10 hover:border-primary/50 dark:bg-white/5 dark:border-white/10 dark:hover:border-primary/50 transition-all duration-300;
+    @apply backdrop-blur-md bg-slate-900/5 border border-slate-900/10 hover:border-primary/50 dark:bg-white/5 dark:border-white/10 dark:hover:border-primary/50 transition-all duration-500;
+    transform: perspective(1000px) rotateX(0) rotateY(0) translateZ(0);
+    transform-style: preserve-3d;
+    will-change: transform, box-shadow;
+  }
+
+  .glass-card:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateY(-5px) scale(1.02);
+    @apply shadow-2xl shadow-primary/20;
+    z-index: 10;
   }
   
   .text-gradient {

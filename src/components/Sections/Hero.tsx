@@ -56,21 +56,24 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
+          style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
         >
-          <a
+          <motion.a
+            whileHover={{ translateZ: 20, scale: 1.05 }}
             href="#projects"
-            className="group relative px-8 py-4 rounded-2xl bg-primary text-white font-bold transition-all hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 flex items-center gap-2 overflow-hidden"
+            className="group relative px-8 py-4 rounded-2xl bg-primary text-white font-bold transition-all hover:shadow-2xl hover:shadow-primary/30 flex items-center gap-2 overflow-hidden"
           >
             <span className="relative z-10">{t.hero.cta1}</span>
             <ArrowRight size={20} className="relative z-10 group-hover:translate-x-1 transition-transform" />
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-          </a>
-          <a
+          </motion.a>
+          <motion.a
+            whileHover={{ translateZ: 20, scale: 1.05 }}
             href="#contact"
-            className="px-8 py-4 rounded-2xl glass border border-white/10 text-white font-bold transition-all hover:bg-white/10 hover:scale-105"
+            className="px-8 py-4 rounded-2xl glass border border-white/10 text-white font-bold transition-all hover:bg-white/10"
           >
             {t.hero.cta2}
-          </a>
+          </motion.a>
         </motion.div>
 
         {/* Metrics */}
@@ -79,18 +82,34 @@ const Hero: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto"
+          style={{ perspective: 1000 }}
         >
           {metrics.map((metric, i) => (
-            <div
+            <motion.div
               key={i}
+              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.05, z: 20 }}
               className="glass-card p-6 rounded-3xl flex flex-col items-center gap-2 group"
+              style={{ transformStyle: 'preserve-3d' }}
             >
-              <div className="p-3 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <motion.div 
+                className="p-3 rounded-2xl bg-primary/10 group-hover:bg-primary/20 transition-colors"
+                style={{ transform: 'translateZ(30px)' }}
+              >
                 {metric.icon}
-              </div>
-              <span className="text-3xl font-bold text-white tracking-tight">{metric.value}</span>
-              <span className="text-sm text-slate-400 font-medium">{metric.label}</span>
-            </div>
+              </motion.div>
+              <motion.span 
+                className="text-3xl font-bold text-white tracking-tight"
+                style={{ transform: 'translateZ(20px)' }}
+              >
+                {metric.value}
+              </motion.span>
+              <motion.span 
+                className="text-sm text-slate-400 font-medium"
+                style={{ transform: 'translateZ(10px)' }}
+              >
+                {metric.label}
+              </motion.span>
+            </motion.div>
           ))}
         </motion.div>
       </div>
