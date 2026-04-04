@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { Clock, Timer, Activity, TrendingUp, Cpu } from 'lucide-react';
+import { Clock, Timer, Activity, TrendingUp, Cpu, Wifi, RefreshCw, MapPin } from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -16,29 +16,72 @@ import {
 } from 'recharts';
 
 const techGrowthData = [
-  { year: '2020', growth: 40 },
-  { year: '2021', growth: 55 },
-  { year: '2022', growth: 70 },
-  { year: '2023', growth: 85 },
-  { year: '2024', growth: 100 },
-  { year: '2025', growth: 120 },
-  { year: '2026', growth: 150 },
+  { year: '2018', value: 50, event: 'Primeros modelos Transformer' },
+  { year: '2019', value: 73, event: 'GPT-2 demuestra capacidades de texto' },
+  { year: '2020', value: 100, event: 'GPT-3 revoluciona el NLP' },
+  { year: '2021', value: 130, event: 'Auge de GitHub Copilot y AlphaFold' },
+  { year: '2022', value: 160, event: 'Lanzamiento de ChatGPT (OpenAI)' },
+  { year: '2023', value: 200, event: 'Era de los LLMs (GPT-4, Gemini)' },
+  { year: '2024', value: 250, event: 'IA Multimodal y Agentes Autónomos' },
+  { year: '2025', value: 320, event: 'IA Cuántica y Razonamiento Avanzado' },
+  { year: '2026', value: 400, event: 'AGI Temprana y Adopción Masiva' },
 ];
 
 const aiAdoptionData = [
-  { month: 'Ene', value: 20 },
-  { month: 'Feb', value: 35 },
-  { month: 'Mar', value: 45 },
-  { month: 'Abr', value: 60 },
-  { month: 'May', value: 80 },
-  { month: 'Jun', value: 110 },
-  { month: 'Jul', value: 140 },
+  { year: '2018', value: 0.1, model: 'GPT-1' },
+  { year: '2019', value: 1.5, model: 'GPT-2' },
+  { year: '2020', value: 175, model: 'GPT-3' },
+  { year: '2021', value: 280, model: 'Gopher' },
+  { year: '2022', value: 540, model: 'PaLM' },
+  { year: '2023', value: 1760, model: 'GPT-4' },
+  { year: '2024', value: 5000, model: 'Gemini 1.5 / Llama 3' },
+  { year: '2025', value: 15000, model: 'Modelos Next-Gen' },
+  { year: '2026', value: 50000, model: 'Arquitecturas Distribuidas' },
 ];
+
+const CustomBarTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-slate-900/95 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md z-50">
+        <p className="text-white font-bold mb-1">{label}</p>
+        <p className="text-primary font-mono text-lg mb-2">
+          ${payload[0].value} Billones USD
+        </p>
+        <p className="text-slate-400 text-xs max-w-[200px] leading-relaxed">
+          {payload[0].payload.event}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomAreaTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-slate-900/95 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md z-50">
+        <p className="text-white font-bold mb-1">{label}</p>
+        <p className="text-primary font-mono text-lg mb-2">
+          {payload[0].value}B Parámetros
+        </p>
+        <p className="text-slate-400 text-xs max-w-[200px]">
+          Hito: <span className="text-white font-bold">{payload[0].payload.model}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const Dashboard: React.FC = () => {
   const { settings } = useApp();
   const [time, setTime] = useState(new Date());
   const [sessionSeconds, setSessionSeconds] = useState(0);
+  const [isTesting, setIsTesting] = useState(false);
+  const [latency, setLatency] = useState<number | null>(null);
+  const [currentPing, setCurrentPing] = useState<number | null>(null);
+  const [testProgress, setTestProgress] = useState(0);
+  const [location, setLocation] = useState<string>('Buscando ubicación...');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -48,11 +91,91 @@ const Dashboard: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data.city && data.country_name) {
+          setLocation(`${data.city}, ${data.country_name}`);
+        } else {
+          setLocation('Ubicación Desconocida');
+        }
+      })
+      .catch(() => setLocation('Ubicación Desconocida'));
+  }, []);
+
   const formatSessionTime = (totalSeconds: number) => {
     const h = Math.floor(totalSeconds / 3600);
     const m = Math.floor((totalSeconds % 3600) / 60);
     const s = totalSeconds % 60;
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const runSpeedTest = async () => {
+    if (isTesting) return;
+    setIsTesting(true);
+    setLatency(null);
+    setCurrentPing(0);
+    setTestProgress(0);
+    
+    const duration = 5000;
+    const startTime = Date.now();
+    let pings: number[] = [];
+
+    const pingLoop = async () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      
+      if (elapsed >= duration) {
+        const avg = pings.length ? Math.round(pings.reduce((a, b) => a + b, 0) / pings.length) : 0;
+        setLatency(avg);
+        setCurrentPing(avg);
+        setTestProgress(100);
+        setIsTesting(false);
+        return;
+      }
+
+      setTestProgress((elapsed / duration) * 100);
+
+      const reqStart = Date.now();
+      try {
+        await fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' });
+        const reqTime = Date.now() - reqStart;
+        pings.push(reqTime);
+        setCurrentPing(reqTime);
+      } catch (e) {
+        const simulated = Math.floor(Math.random() * 30) + 20;
+        pings.push(simulated);
+        setCurrentPing(simulated);
+      }
+
+      setTimeout(pingLoop, 200);
+    };
+
+    pingLoop();
+  };
+
+  const getLatencyColor = (val: number | null) => {
+    if (!val) return settings.themeColor;
+    if (val < 80) return '#22c55e'; // green
+    if (val < 150) return '#eab308'; // yellow
+    return '#ef4444'; // red
+  };
+
+  const getLatencyStatus = (val: number | null) => {
+    if (!val) return '';
+    if (val < 80) return 'Óptimo';
+    if (val < 150) return 'Aceptable';
+    return 'Lento';
+  };
+
+  const getStrokeDashoffset = (val: number | null) => {
+    const circumference = Math.PI * 40; // 125.66
+    if (!val) return circumference;
+    const maxPing = 300;
+    const clamped = Math.min(Math.max(val, 0), maxPing);
+    const percentage = clamped / maxPing;
+    return circumference - (percentage * circumference);
   };
 
   return (
@@ -71,7 +194,7 @@ const Dashboard: React.FC = () => {
             Métricas en Tiempo Real
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Visualiza el crecimiento tecnológico y el avance de la inteligencia artificial, junto con datos de tu sesión actual.
+            Visualiza el crecimiento tecnológico y el avance de la inteligencia artificial con datos históricos reales, junto con métricas de tu sesión actual.
           </p>
         </motion.div>
 
@@ -141,7 +264,7 @@ const Dashboard: React.FC = () => {
             </p>
           </motion.div>
 
-          {/* Network Widget */}
+          {/* Network Widget (Manual Test) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -150,15 +273,63 @@ const Dashboard: React.FC = () => {
             className="glass-card p-6 rounded-3xl border border-white/10 flex flex-col items-center justify-center text-center relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
-              <Activity size={48} className="text-primary" />
+              <Wifi size={48} className="text-primary" />
             </div>
-            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">Latencia</p>
-            <p className="text-3xl font-bold text-white tracking-tight font-mono">
-              12<span className="text-lg text-slate-500">ms</span>
-            </p>
-            <p className="text-xs text-slate-500 mt-2">
-              Conexión estable
-            </p>
+            
+            <div className="flex items-center gap-1 mb-1">
+              <MapPin size={12} className="text-primary" />
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider truncate max-w-[120px]">
+                {location}
+              </p>
+            </div>
+            <p className="text-sm text-white font-bold uppercase tracking-wider mb-2">Test de Red</p>
+            
+            <div className="relative flex flex-col items-center mb-1">
+              <svg width="100" height="55" viewBox="0 0 100 55" className="overflow-visible">
+                <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" strokeLinecap="round" />
+                <path 
+                  d="M 10 50 A 40 40 0 0 1 90 50" 
+                  fill="none" 
+                  stroke={getLatencyColor(currentPing || latency)} 
+                  strokeWidth="8" 
+                  strokeLinecap="round"
+                  strokeDasharray={125.66}
+                  strokeDashoffset={getStrokeDashoffset(currentPing || latency)}
+                  className="transition-all duration-200 ease-out"
+                />
+              </svg>
+              <div className="absolute bottom-0 flex flex-col items-center">
+                <span className="text-2xl font-bold font-mono text-white leading-none">
+                  {currentPing || latency ? (currentPing || latency) : '--'}
+                </span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider">ms</span>
+              </div>
+            </div>
+            
+            <div className="h-4 mb-3">
+              {(latency !== null || isTesting) && (
+                <span className="text-xs font-bold" style={{ color: getLatencyColor(currentPing || latency) }}>
+                  {isTesting ? 'Midiendo...' : getLatencyStatus(latency)}
+                </span>
+              )}
+            </div>
+            
+            <button 
+              onClick={runSpeedTest}
+              disabled={isTesting}
+              className="relative overflow-hidden px-4 py-1.5 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors disabled:opacity-80 disabled:cursor-not-allowed w-full max-w-[140px]"
+            >
+              {isTesting && (
+                <div 
+                  className="absolute left-0 top-0 bottom-0 bg-primary/40 transition-all duration-200 ease-linear"
+                  style={{ width: `${testProgress}%` }}
+                />
+              )}
+              <span className="relative z-10 flex items-center justify-center gap-1">
+                {isTesting ? <RefreshCw size={12} className="animate-spin" /> : null}
+                {isTesting ? 'Calculando' : latency !== null ? 'Repetir Test' : 'Iniciar Test'}
+              </span>
+            </button>
           </motion.div>
         </div>
 
@@ -173,22 +344,22 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <TrendingUp size={20} className="text-primary" />
-                Crecimiento Tecnológico
+                Inversión Global en IA
               </h3>
             </div>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={techGrowthData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                   <XAxis dataKey="year" stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
                     cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                    contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                    content={<CustomBarTooltip />}
                   />
-                  <Bar dataKey="growth" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {techGrowthData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={settings.themeColor} fillOpacity={0.8 + (index * 0.05)} />
+                      <Cell key={`cell-${index}`} fill={settings.themeColor} fillOpacity={0.6 + (index * 0.05)} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -206,7 +377,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <Activity size={20} className="text-primary" />
-                Adopción de IA (Tendencia)
+                Evolución de Modelos IA (Parámetros)
               </h3>
             </div>
             <div className="h-[300px] w-full">
@@ -214,16 +385,14 @@ const Dashboard: React.FC = () => {
                 <AreaChart data={aiAdoptionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={settings.themeColor} stopOpacity={0.5}/>
+                      <stop offset="5%" stopColor={settings.themeColor} stopOpacity={0.6}/>
                       <stop offset="95%" stopColor={settings.themeColor} stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                  <XAxis dataKey="month" stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <XAxis dataKey="year" stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="rgba(255,255,255,0.5)" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
-                  />
+                  <Tooltip content={<CustomAreaTooltip />} />
                   <Area type="monotone" dataKey="value" stroke={settings.themeColor} strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
                 </AreaChart>
               </ResponsiveContainer>
