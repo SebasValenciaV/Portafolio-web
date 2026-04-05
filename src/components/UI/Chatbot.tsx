@@ -37,12 +37,7 @@ const Chatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error("API key no configurada");
-      }
-      
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
       const systemInstruction = `
         Eres el asistente virtual de "Portafolio Web", la marca personal de Sebas Valencia.
@@ -76,9 +71,9 @@ const Chatbot: React.FC = () => {
 
       const botText = response.text || 'Lo siento, tuve un problema al procesar tu mensaje. ¿Podrías repetirlo?';
       setMessages(prev => [...prev, { role: 'bot', text: botText }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Chatbot Error:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Lo siento, parece que hay un problema de conexión o configuración. Por favor, intenta más tarde o contáctame directamente por email.' }]);
+      setMessages(prev => [...prev, { role: 'bot', text: `Lo siento, parece que hay un problema: ${error.message || 'Error desconocido'}` }]);
     } finally {
       setIsLoading(false);
     }
