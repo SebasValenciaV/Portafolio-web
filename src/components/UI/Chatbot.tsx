@@ -37,8 +37,12 @@ const Chatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const model = "gemini-3-flash-preview";
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("API key no configurada");
+      }
+      
+      const ai = new GoogleGenAI({ apiKey });
       
       const systemInstruction = `
         Eres el asistente virtual de "Portafolio Web", la marca personal de Sebas Valencia.
@@ -59,18 +63,22 @@ const Chatbot: React.FC = () => {
         6. Responde en el idioma en que te hablen (Español, Inglés, Portugués o Francés).
       `;
 
+      const chatHistory = messages.map(m => `${m.role === 'bot' ? 'Asistente' : 'Usuario'}: ${m.text}`).join('\n');
+      const prompt = `Historial de conversación:\n${chatHistory}\n\nUsuario: ${userMessage}\nAsistente:`;
+
       const response = await ai.models.generateContent({
-        model: model,
-        contents: [
-          { role: 'user', parts: [{ text: `Contexto del sistema: ${systemInstruction}\n\nHistorial: ${messages.map(m => `${m.role}: ${m.text}`).join('\n')}\n\nUsuario: ${userMessage}` }] }
-        ],
+        model: "gemini-3-flash-preview",
+        contents: prompt,
+        config: {
+          systemInstruction: systemInstruction,
+        }
       });
 
       const botText = response.text || 'Lo siento, tuve un problema al procesar tu mensaje. ¿Podrías repetirlo?';
       setMessages(prev => [...prev, { role: 'bot', text: botText }]);
     } catch (error) {
       console.error('Chatbot Error:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Lo siento, parece que hay un problema de conexión. Por favor, intenta más tarde o contáctame directamente por email.' }]);
+      setMessages(prev => [...prev, { role: 'bot', text: 'Lo siento, parece que hay un problema de conexión o configuración. Por favor, intenta más tarde o contáctame directamente por email.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -100,13 +108,12 @@ const Chatbot: React.FC = () => {
               opacity: 1, 
               y: 0, 
               scale: 1,
-              height: isMinimized ? '80px' : '600px',
-              width: isMinimized ? '300px' : '400px'
+              height: isMinimized ? '80px' : 'min(600px, calc(100vh - 48px))',
             }}
             exit={{ opacity: 0, y: 100, scale: 0.9 }}
             className={cn(
-              "fixed bottom-6 left-6 z-[90] glass border border-white/10 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col transition-all duration-500",
-              isMinimized && "rounded-2xl"
+              "fixed bottom-6 left-6 z-[90] glass border border-white/10 shadow-2xl overflow-hidden flex flex-col transition-all duration-500",
+              isMinimized ? "w-[300px] rounded-2xl" : "w-[calc(100vw-48px)] sm:w-[400px] max-h-[calc(100vh-48px)] rounded-[2rem]"
             )}
           >
             {/* Header */}
