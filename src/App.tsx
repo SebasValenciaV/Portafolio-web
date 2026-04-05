@@ -19,7 +19,6 @@ import Customizer from './components/UI/Customizer';
 import MusicPlayer from './components/UI/MusicPlayer';
 import DynamicBackground from './components/UI/DynamicBackground';
 import WhatsAppButton from './components/UI/WhatsAppButton';
-import Chatbot from './components/UI/Chatbot';
 import FuturisticSection from './components/UI/FuturisticSection';
 import GameFloatingButton from './components/UI/GameFloatingButton';
 
@@ -51,7 +50,6 @@ export default function App() {
         {/* UI Overlays */}
         <Customizer />
         <MusicPlayer />
-        <Chatbot />
         <WhatsAppButton />
         <GameFloatingButton />
       </div>
