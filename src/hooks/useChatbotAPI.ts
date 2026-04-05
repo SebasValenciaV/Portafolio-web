@@ -19,7 +19,7 @@ export const useChatbotAPI = () => {
       const apiKey = process.env.GEMINI_API_KEY;
       
       if (!apiKey || apiKey.trim() === "" || apiKey === "undefined") {
-        throw new Error("La clave de API (GEMINI_API_KEY) no está configurada. Por favor, asegúrate de haberla agregado en los ajustes de AI Studio.");
+        throw new Error("La clave de API (GEMINI_API_KEY) no está configurada. Por favor, ve al menú 'Settings' (Ajustes) en la esquina superior derecha del editor y agrega una variable llamada GEMINI_API_KEY con tu clave de Google AI Studio.");
       }
 
       const ai = new GoogleGenAI({ apiKey });
@@ -45,7 +45,6 @@ export const useChatbotAPI = () => {
 
       // Structure the contents for the model
       const contents = [
-        { role: 'user', parts: [{ text: `Instrucciones del sistema: ${systemInstruction}` }] },
         ...chatHistory.map(m => ({
           role: m.role === 'bot' ? 'model' : 'user',
           parts: [{ text: m.text }]
@@ -56,6 +55,9 @@ export const useChatbotAPI = () => {
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: contents,
+        config: {
+          systemInstruction: systemInstruction,
+        }
       });
 
       const botText = response.text || 'Lo siento, tuve un problema al procesar tu mensaje. ¿Podrías repetirlo?';
