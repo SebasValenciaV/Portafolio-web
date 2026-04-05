@@ -1,15 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, Send, X, Minimize2, Maximize2, User, Bot, Loader2, Phone, Mail } from 'lucide-react';
+import { MessageSquare, Send, X, Minimize2, Maximize2, User, Bot, Loader2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { cn } from '../../lib/utils';
 import { useChatbotAPI } from '../../hooks/useChatbotAPI';
 
+interface Message {
+  role: 'user' | 'bot';
+  text: string;
+}
+
 const Chatbot: React.FC = () => {
-  const { t, settings } = useApp();
+  const { t } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [messages, setMessages] = useState<{ role: 'user' | 'bot'; text: string }[]>([
+  const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', text: '¡Hola! Soy tu asistente virtual de Portafolio Web. ¿En qué puedo ayudarte hoy? Puedo contarte sobre mis servicios, tecnologías o ayudarte a agendar una llamada.' }
   ]);
   const [input, setInput] = useState('');
@@ -20,7 +25,7 @@ const Chatbot: React.FC = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   useEffect(() => {
     const handleOpenChatbot = () => setIsOpen(true);
@@ -28,14 +33,15 @@ const Chatbot: React.FC = () => {
     return () => window.removeEventListener('open-chatbot', handleOpenChatbot);
   }, []);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (text: string = input) => {
+    if (!text.trim() || isLoading) return;
 
-    const userMessage = input.trim();
+    const userMessage = text.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
 
     try {
+      // Pass the messages history (excluding the current user message which is already in state)
       const botText = await sendMessage(userMessage, messages);
       setMessages(prev => [...prev, { role: 'bot', text: botText }]);
     } catch (error: any) {
@@ -54,6 +60,7 @@ const Chatbot: React.FC = () => {
           whileHover={{ scale: 1.1 }}
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 left-6 z-[90] w-16 h-16 rounded-full bg-primary text-white shadow-2xl shadow-primary/30 flex items-center justify-center group"
+          id="chatbot-toggle"
         >
           <MessageSquare size={28} className="group-hover:rotate-12 transition-transform" />
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-950 animate-pulse" />
@@ -75,6 +82,7 @@ const Chatbot: React.FC = () => {
               "fixed bottom-6 left-6 z-[90] glass border border-white/10 shadow-2xl overflow-hidden flex flex-col transition-all duration-500",
               isMinimized ? "w-[300px] rounded-2xl" : "w-[calc(100vw-48px)] sm:w-[400px] max-h-[calc(100vh-48px)] rounded-[2rem]"
             )}
+            id="chatbot-window"
           >
             {/* Header */}
             <div className="p-4 bg-primary/10 border-b border-white/5 flex items-center justify-between">
@@ -94,12 +102,14 @@ const Chatbot: React.FC = () => {
                 <button 
                   onClick={() => setIsMinimized(!isMinimized)}
                   className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                  aria-label={isMinimized ? "Maximizar" : "Minimizar"}
                 >
                   {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
                 </button>
                 <button 
                   onClick={() => setIsOpen(false)}
                   className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                  aria-label="Cerrar"
                 >
                   <X size={16} />
                 </button>
@@ -154,20 +164,23 @@ const Chatbot: React.FC = () => {
                 {/* Quick Actions */}
                 <div className="px-6 py-2 flex gap-2 overflow-x-auto no-scrollbar">
                   <button 
-                    onClick={() => setInput('¿Qué servicios ofreces?')}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full glass border border-white/10 text-[10px] font-bold text-slate-400 hover:text-primary hover:border-primary transition-all"
+                    onClick={() => handleSend('¿Qué servicios ofreces?')}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full glass border border-white/10 text-[10px] font-bold text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50"
                   >
                     Servicios
                   </button>
                   <button 
-                    onClick={() => setInput('¿Qué tecnologías usas?')}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full glass border border-white/10 text-[10px] font-bold text-slate-400 hover:text-primary hover:border-primary transition-all"
+                    onClick={() => handleSend('¿Qué tecnologías usas?')}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full glass border border-white/10 text-[10px] font-bold text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50"
                   >
                     Tecnologías
                   </button>
                   <button 
-                    onClick={() => setInput('Quiero agendar una llamada')}
-                    className="whitespace-nowrap px-3 py-1.5 rounded-full glass border border-white/10 text-[10px] font-bold text-slate-400 hover:text-primary hover:border-primary transition-all"
+                    onClick={() => handleSend('Quiero agendar una llamada')}
+                    disabled={isLoading}
+                    className="whitespace-nowrap px-3 py-1.5 rounded-full glass border border-white/10 text-[10px] font-bold text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50"
                   >
                     Agendar Llamada
                   </button>
@@ -183,11 +196,13 @@ const Chatbot: React.FC = () => {
                       onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                       placeholder="Escribe tu mensaje..."
                       className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-primary transition-all"
+                      disabled={isLoading}
                     />
                     <button
-                      onClick={handleSend}
+                      onClick={() => handleSend()}
                       disabled={!input.trim() || isLoading}
                       className="p-4 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-xl shadow-primary/20"
+                      aria-label="Enviar mensaje"
                     >
                       <Send size={20} />
                     </button>

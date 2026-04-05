@@ -15,9 +15,11 @@ export const useChatbotAPI = () => {
     setError(null);
 
     try {
+      // Accessing the key defined in vite.config.ts
       const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey || apiKey === "") {
-        throw new Error("La clave de API (GEMINI_API_KEY) no está configurada en el entorno. Por favor, agrégala en la configuración del proyecto.");
+      
+      if (!apiKey || apiKey.trim() === "" || apiKey === "undefined") {
+        throw new Error("La clave de API (GEMINI_API_KEY) no está configurada. Por favor, asegúrate de haberla agregado en los ajustes de AI Studio.");
       }
 
       const ai = new GoogleGenAI({ apiKey });
@@ -41,15 +43,19 @@ export const useChatbotAPI = () => {
         6. Responde en el idioma en que te hablen (Español, Inglés, Portugués o Francés).
       `;
 
-      const historyString = chatHistory.map(m => `${m.role === 'bot' ? 'Asistente' : 'Usuario'}: ${m.text}`).join('\n');
-      const prompt = `Historial de conversación:\n${historyString}\n\nUsuario: ${userMessage}\nAsistente:`;
+      // Structure the contents for the model
+      const contents = [
+        { role: 'user', parts: [{ text: `Instrucciones del sistema: ${systemInstruction}` }] },
+        ...chatHistory.map(m => ({
+          role: m.role === 'bot' ? 'model' : 'user',
+          parts: [{ text: m.text }]
+        })),
+        { role: 'user', parts: [{ text: userMessage }] }
+      ];
 
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-          systemInstruction: systemInstruction,
-        }
+        contents: contents,
       });
 
       const botText = response.text || 'Lo siento, tuve un problema al procesar tu mensaje. ¿Podrías repetirlo?';
@@ -58,7 +64,7 @@ export const useChatbotAPI = () => {
       console.error('Chatbot API Error:', err);
       const errorMessage = err.message || 'Error desconocido';
       setError(errorMessage);
-      throw err; // Re-throw so the component can handle it if needed
+      throw err;
     } finally {
       setIsLoading(false);
     }
