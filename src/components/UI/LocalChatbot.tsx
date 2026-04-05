@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, Send, X, Minimize2, Maximize2, User, Bot, HelpCircle, RotateCcw, Info, Phone, MapPin, Clock } from 'lucide-react';
+import { MessageSquare, Send, X, Minimize2, Maximize2, User, Bot, HelpCircle, RotateCcw, Info, Phone, MapPin, Clock, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ChatbotEngine, ChatMessage } from '../../lib/chatbot/engine';
 
@@ -21,7 +21,7 @@ const ChatbotLocal: React.FC = () => {
       if (history.length === 0) {
         setMessages([{ 
           role: 'bot', 
-          text: '¡Hola! Soy tu asistente virtual local. 👋\n\nEstoy aquí para ayudarte con información sobre servicios, contacto, ubicación y horarios. No necesito internet ni claves de API para funcionar.\n\n¿En qué puedo apoyarte hoy?',
+          text: '¡Hola! Soy tu asistente virtual inteligente. 👋\n\nEstoy aquí para ayudarte a conocer mejor este sitio, mis servicios, tecnologías y experiencia. Todo funciona de forma local y privada.\n\n¿En qué puedo ayudarte hoy? Puedes usar los botones de abajo o escribirme directamente.',
           timestamp: Date.now()
         }]);
       } else {
@@ -49,7 +49,15 @@ const ChatbotLocal: React.FC = () => {
 
     try {
       const response = await engineRef.current.processMessage(userMessage);
-      setMessages(prev => [...prev, { role: 'bot', text: response, timestamp: Date.now() }]);
+      if (userMessage.toLowerCase() === '/limpiar') {
+        setMessages([{ 
+          role: 'bot', 
+          text: 'Historial de conversación limpiado. 👋\n\n¿En qué puedo ayudarte ahora?',
+          timestamp: Date.now()
+        }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'bot', text: response, timestamp: Date.now() }]);
+      }
     } catch (error) {
       console.error('Chatbot Error:', error);
       setMessages(prev => [...prev, { role: 'bot', text: 'Ups, algo salió mal en mi lógica local.', timestamp: Date.now() }]);
@@ -63,7 +71,7 @@ const ChatbotLocal: React.FC = () => {
       engineRef.current.clearHistory();
       setMessages([{ 
         role: 'bot', 
-        text: '¡Hola! Soy tu asistente virtual local. 👋\n\nEstoy aquí para ayudarte con información sobre servicios, contacto, ubicación y horarios. No necesito internet ni claves de API para funcionar.\n\n¿En qué puedo apoyarte hoy?',
+        text: '¡Hola! Soy tu asistente virtual inteligente. 👋\n\nEstoy aquí para ayudarte a conocer mejor este sitio, mis servicios, tecnologías y experiencia. Todo funciona de forma local y privada.\n\n¿En qué puedo ayudarte hoy? Puedes usar los botones de abajo o escribirme directamente.',
         timestamp: Date.now()
       }]);
     }
@@ -71,10 +79,12 @@ const ChatbotLocal: React.FC = () => {
 
   const SUGGESTED_QUESTIONS = [
     { label: 'Servicios', icon: <Info size={12} />, text: '¿Qué servicios ofrecen?' },
+    { label: 'Portafolio', icon: <Bot size={12} />, text: '¿Puedo ver tu portafolio?' },
+    { label: 'Tecnologías', icon: <Sparkles size={12} />, text: '¿Qué tecnologías usas?' },
+    { label: 'Experiencia', icon: <Clock size={12} />, text: '¿Cuánta experiencia tienes?' },
+    { label: 'Precios', icon: <HelpCircle size={12} />, text: '¿Cuánto cuestan los servicios?' },
     { label: 'Contacto', icon: <Phone size={12} />, text: '¿Cómo puedo contactarlos?' },
     { label: 'Ubicación', icon: <MapPin size={12} />, text: '¿Dónde están ubicados?' },
-    { label: 'Horarios', icon: <Clock size={12} />, text: '¿Cuáles son sus horarios?' },
-    { label: 'Ayuda', icon: <HelpCircle size={12} />, text: '/ayuda' },
   ];
 
   return (
@@ -129,7 +139,7 @@ const ChatbotLocal: React.FC = () => {
                 <button 
                   onClick={resetConversation}
                   className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-                  title="Limpiar historial"
+                  title="Reiniciar conversación"
                 >
                   <RotateCcw size={16} />
                 </button>

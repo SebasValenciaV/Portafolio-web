@@ -21,8 +21,8 @@ export class ChatbotEngine {
     return text
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^\w\s/]/gi, '')
+      .replace(/[\u0300-\u036f]/g, "") // Remove accents
+      .replace(/[^\w\s/]/gi, '') // Remove special characters except /
       .trim();
   }
 
@@ -41,6 +41,8 @@ export class ChatbotEngine {
 
   public async processMessage(input: string): Promise<string> {
     const originalInput = input.trim();
+    if (!originalInput) return "Por favor, escribe algo para poder ayudarte.";
+    
     const normalizedInput = this.normalize(input);
     
     this.history.push({ role: 'user', text: originalInput, timestamp: Date.now() });
@@ -80,29 +82,49 @@ export class ChatbotEngine {
   }
 
   private findBestMatch(input: string): string {
-    const words = input.split(/\s+/);
-    let bestMatch: { score: number; response: string } = { score: 0, response: FALLBACK_RESPONSE };
+    const words = input.split(/\s+/).filter(w => w.length > 2);
+    let bestMatch: { score: number; response: string; key: string } = { score: 0, response: FALLBACK_RESPONSE, key: '' };
 
     for (const key in KNOWLEDGE_BASE) {
       const entry = KNOWLEDGE_BASE[key];
       let currentScore = 0;
 
       for (const keyword of entry.keywords) {
-        // Exact match
-        if (input.includes(keyword)) {
-          currentScore += 2;
+        // Exact match in the whole input
+        if (input === keyword) {
+          currentScore += 10;
+        } else if (input.includes(keyword)) {
+          currentScore += 5;
         }
-        // Partial word match
+
+        // Word by word match
         for (const word of words) {
-          if (word.length > 3 && (keyword.includes(word) || word.includes(keyword))) {
-            currentScore += 1;
+          if (word === keyword) {
+            currentScore += 8;
+          } else if (keyword.includes(word) && word.length > 3) {
+            currentScore += 3;
           }
         }
       }
 
       if (currentScore > bestMatch.score) {
-        bestMatch = { score: currentScore, response: entry.response };
+        bestMatch = { score: currentScore, response: entry.response, key };
       }
+    }
+
+    // If the score is too low, use fallback
+    if (bestMatch.score < 3) {
+      return FALLBACK_RESPONSE;
+    }
+
+    // Add some variation to greetings if it's a greeting
+    if (bestMatch.key === 'saludos') {
+      const variations = [
+        "¡Hola! ¿En qué puedo ayudarte hoy?",
+        "¡Hola! Qué bueno verte por aquí. ¿Tienes alguna duda?",
+        "¡Hola! Soy tu asistente virtual. ¿Qué te gustaría saber sobre nosotros?"
+      ];
+      return variations[Math.floor(Math.random() * variations.length)];
     }
 
     return bestMatch.response;
