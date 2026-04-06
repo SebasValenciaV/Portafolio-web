@@ -13,7 +13,7 @@ import Portfolio from './components/Sections/Portfolio';
 import Tech from './components/Sections/Tech';
 import SectorsAndSolutions from './components/Sections/Sectors';
 import ProcessAndReviews from './components/Sections/Process';
-import RecruitersAndContact from './components/Sections/Contact';
+import RecruitersSection from './components/Sections/Contact';
 import Footer from './components/Layout/Footer';
 import Customizer from './components/UI/Customizer';
 import MusicPlayer from './components/UI/MusicPlayer';
@@ -42,7 +42,7 @@ export default function App() {
           <FuturisticSection id="tech" className="-mt-12 relative z-20"><Tech /></FuturisticSection>
           <FuturisticSection id="sectors" className="-mt-12 relative z-10"><SectorsAndSolutions /></FuturisticSection>
           <FuturisticSection id="process" className="-mt-12 relative z-20"><ProcessAndReviews /></FuturisticSection>
-          <FuturisticSection id="contact" className="-mt-12 relative z-10"><RecruitersAndContact /></FuturisticSection>
+          <FuturisticSection id="recruiters" className="-mt-12 relative z-10"><RecruitersSection /></FuturisticSection>
         </main>
 
         {/* Footer */}

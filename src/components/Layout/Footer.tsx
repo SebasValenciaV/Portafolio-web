@@ -47,28 +47,9 @@ const Footer: React.FC = () => {
               <li><a href="#projects" className="text-slate-400 hover:text-primary transition-colors text-sm">{t.nav.projects}</a></li>
               <li><a href="#tech" className="text-slate-400 hover:text-primary transition-colors text-sm">{t.nav.tech}</a></li>
               <li><a href="#services" className="text-slate-400 hover:text-primary transition-colors text-sm">{t.nav.services}</a></li>
+              <li><a href="#recruiters" className="text-slate-400 hover:text-primary transition-colors text-sm">{t.recruiters.title}</a></li>
             </ul>
           </div>
-
-          {/* Contact Info */}
-          <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">{t.nav.contact}</h4>
-            <ul className="space-y-4">
-              <li className="flex items-center gap-3 text-slate-400 text-sm">
-                <Phone size={16} className="text-primary" />
-                +57 3168859466
-              </li>
-              <li className="flex items-center gap-3 text-slate-400 text-sm">
-                <Mail size={16} className="text-primary" />
-                sebasvalenciav.gia@gmail.com
-              </li>
-              <li className="flex items-center gap-3 text-slate-400 text-sm">
-                <MapPin size={16} className="text-primary" />
-                Colombia
-              </li>
-            </ul>
-          </div>
-
         </div>
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">

@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
     { name: t.nav.projects, href: '#portfolio' },
     { name: t.nav.tech, href: '#tech' },
     { name: t.nav.services, href: '#sectors' },
-    { name: t.nav.contact, href: '#contact' },
+    { name: t.recruiters.title, href: '#recruiters' },
   ];
 
   const languages = [
