@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { ShoppingBag, Briefcase, Building2, HeartPulse, GraduationCap, Rocket, Cpu, CheckCircle2 } from 'lucide-react';
+import { ShoppingBag, Briefcase, Building2, HeartPulse, GraduationCap, Rocket, Cpu, Globe, MousePointer2, Code2, Zap, BarChart3, Brain, Layout } from 'lucide-react';
 
 const SectorsAndSolutions: React.FC = () => {
   const { t } = useApp();
@@ -17,13 +17,13 @@ const SectorsAndSolutions: React.FC = () => {
   ];
 
   const solutions = [
-    { title: t.solutions.web, desc: "Desarrollo de sitios web profesionales a medida." },
-    { title: t.solutions.landing, desc: "Landing pages optimizadas para la conversión." },
-    { title: t.solutions.custom, desc: "Sistemas web complejos y personalizados." },
-    { title: t.solutions.automation, desc: "Automatización de procesos digitales." },
-    { title: t.solutions.dashboards, desc: "Visualización de datos y dashboards." },
-    { title: t.solutions.ai, desc: "Integración de inteligencia artificial." },
-    { title: t.solutions.portals, desc: "Portales empresariales y de clientes." },
+    { title: t.solutions.web, desc: "Desarrollo de sitios web profesionales a medida.", icon: <Globe size={24} /> },
+    { title: t.solutions.landing, desc: "Landing pages optimizadas para la conversión.", icon: <MousePointer2 size={24} /> },
+    { title: t.solutions.custom, desc: "Sistemas web complejos y personalizados.", icon: <Code2 size={24} /> },
+    { title: t.solutions.automation, desc: "Automatización de procesos digitales.", icon: <Zap size={24} /> },
+    { title: t.solutions.dashboards, desc: "Visualización de datos y dashboards.", icon: <BarChart3 size={24} /> },
+    { title: t.solutions.ai, desc: "Integración de inteligencia artificial.", icon: <Brain size={24} /> },
+    { title: t.solutions.portals, desc: "Portales empresariales y de clientes.", icon: <Layout size={24} /> },
   ];
 
   return (
@@ -104,7 +104,7 @@ const SectorsAndSolutions: React.FC = () => {
               className="glass-card p-8 rounded-3xl flex items-start gap-6 group hover:bg-primary/5 transition-all duration-500"
             >
               <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                <CheckCircle2 size={24} />
+                {solution.icon}
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">

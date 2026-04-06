@@ -30,25 +30,11 @@ const About: React.FC = () => {
               style={{ transformStyle: 'preserve-3d' }}
             >
               <img
-                src="https://picsum.photos/seed/person/800/800"
+                src="https://lh3.googleusercontent.com/d/1hIWG0_nbjB3I21oM3HRdCnQ-sDAhgVpO"
                 alt="Sebastian Valencia"
-                className="rounded-full w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                className="rounded-full w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
-              <div 
-                className="absolute top-1/2 -right-4 glass p-4 rounded-2xl shadow-2xl border border-white/10 animate-float hidden md:block"
-                style={{ transform: 'translateZ(50px) translateY(-50%)' }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
-                    10+
-                  </div>
-                  <div>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Años de</p>
-                    <p className="text-xs font-bold text-white">Experiencia</p>
-                  </div>
-                </div>
-              </div>
             </motion.div>
             {/* Decorative Elements */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 bg-primary/20 rounded-full blur-[100px] -z-10" />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { Download, Send, Phone, Mail, Github, Linkedin, Twitter, ExternalLink, User, Building, MessageSquare, Briefcase } from 'lucide-react';
+import { Download, Send, Phone, Mail, Github, Linkedin, Twitter, ExternalLink, User, Building, MessageSquare, Briefcase, CheckCircle2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const RecruitersAndContact: React.FC = () => {
@@ -14,10 +14,13 @@ const RecruitersAndContact: React.FC = () => {
     message: '',
   });
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formState);
-    alert('¡Gracias por tu mensaje! Me pondré en contacto contigo pronto.');
+    setIsSubmitted(true);
+    setTimeout(() => setIsSubmitted(false), 5000);
   };
 
   const socialLinks = [
@@ -211,10 +214,25 @@ const RecruitersAndContact: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-5 rounded-2xl bg-primary text-white font-bold flex items-center justify-center gap-3 hover:scale-[1.02] transition-all shadow-2xl shadow-primary/30 group"
+                disabled={isSubmitted}
+                className={cn(
+                  "w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-2xl group",
+                  isSubmitted 
+                    ? "bg-green-500 text-white cursor-default" 
+                    : "bg-primary text-white hover:scale-[1.02] shadow-primary/30"
+                )}
               >
-                <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                {t.contact.button}
+                {isSubmitted ? (
+                  <>
+                    <CheckCircle2 size={20} />
+                    ¡Mensaje Enviado!
+                  </>
+                ) : (
+                  <>
+                    <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    {t.contact.button}
+                  </>
+                )}
               </button>
             </form>
           </motion.div>
