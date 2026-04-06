@@ -42,7 +42,7 @@ async function startServer() {
   // API Route for Contact Form
   app.post('/api/contact', async (req, res) => {
     console.log('--- NEW CONTACT FORM SUBMISSION ---');
-    console.log('Body:', req.body);
+    console.log('Request Body:', JSON.stringify(req.body, null, 2));
     const { name, email, company, projectType, message } = req.body;
 
     // Validation
@@ -53,7 +53,7 @@ async function startServer() {
 
     try {
       // Configure transporter
-      const transporter = nodemailer.createTransport({
+      const transporterConfig = {
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT || '587'),
         secure: process.env.SMTP_SECURE === 'true',
@@ -61,7 +61,9 @@ async function startServer() {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS?.replace(/\s/g, ''),
         },
-      });
+      };
+      console.log('Transporter Config (sanitized):', { ...transporterConfig, auth: { ...transporterConfig.auth, pass: '***' } });
+      const transporter = nodemailer.createTransport(transporterConfig);
 
       const mailOptions = {
         from: `"${name}" <${process.env.SMTP_USER || 'noreply@example.com'}>`,

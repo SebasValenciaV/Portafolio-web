@@ -28,6 +28,7 @@ const RecruitersAndContact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log('Form submission started. Data:', formState);
 
     try {
       // Use relative URL with leading slash to ensure it hits the current origin
@@ -39,19 +40,22 @@ const RecruitersAndContact: React.FC = () => {
         },
         body: JSON.stringify(formState),
       });
+      console.log('Server response status:', response.status, response.statusText);
 
       // Try to parse as JSON, but handle non-JSON responses
       let data;
       const contentType = response.headers.get('content-type');
+      console.log('Response Content-Type:', contentType);
       if (contentType && contentType.includes('application/json')) {
         data = await response.json();
       } else {
         const text = await response.text();
         console.error('Non-JSON response received:', text);
-        throw new Error('Respuesta del servidor no válida (no es JSON)');
+        throw new Error(`Respuesta del servidor no válida: ${text.substring(0, 100)}`);
       }
 
       if (response.ok) {
+        console.log('Server success response:', data);
         setIsSubmitted(true);
         // Reset form
         setFormState({
@@ -68,12 +72,19 @@ const RecruitersAndContact: React.FC = () => {
         }
       } else {
         console.error('Server error response:', data);
-        alert(data.error || 'Error al enviar el mensaje. El servidor respondió con un error.');
+        const errorMsg = typeof data.error === 'string' ? data.error : JSON.stringify(data.error || data);
+        alert(`Error del servidor: ${errorMsg}`);
       }
     } catch (error) {
       console.error('Detailed fetch error:', error);
-      // More descriptive error message for the user
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      let errorMessage = 'Error desconocido';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else {
+        errorMessage = JSON.stringify(error);
+      }
       alert(`Error de conexión: ${errorMessage}. Asegúrate de que el servidor esté funcionando.`);
     } finally {
       setIsLoading(false);
