@@ -2,26 +2,42 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors';
 import { createServer as createViteServer } from 'vite';
 
 dotenv.config();
 
+console.log('--- SERVER STARTING ---');
+console.log('Environment:', process.env.NODE_ENV || 'development');
+console.log('SMTP Config:', { 
+  host: process.env.SMTP_HOST || 'smtp.gmail.com', 
+  user: process.env.SMTP_USER || 'Not set',
+  passSet: !!process.env.SMTP_PASS
+});
+
 async function startServer() {
   const app = express();
+  app.use(cors());
   app.use(express.json());
+
+  // Health Check
+  app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
 
   // API Route for Contact Form
   app.post('/api/contact', async (req, res) => {
+    console.log('--- NEW CONTACT FORM SUBMISSION ---');
     const { name, email, company, projectType, message } = req.body;
 
     // Validation
     if (!name || !email || !message) {
+      console.warn('Validation failed: Missing required fields');
       return res.status(400).json({ error: 'Faltan campos obligatorios' });
     }
 
     try {
       // Configure transporter
-      // Note: In a real production app, you'd use a service like SendGrid, Resend, or a Gmail App Password
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT || '587'),
@@ -39,7 +55,7 @@ async function startServer() {
         subject: `Nuevo Proyecto: ${projectType || 'General'} - ${name}`,
         text: `Nombre: ${name}\nEmail: ${email}\nEmpresa: ${company || 'N/A'}\nTipo: ${projectType}\n\nMensaje:\n${message}`,
         html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; rounded-2xl: 20px;">
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 20px;">
             <h2 style="color: #3b82f6; margin-bottom: 20px;">Nuevo mensaje de contacto</h2>
             <div style="background-color: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
               <p><strong>Nombre:</strong> ${name}</p>
@@ -67,7 +83,9 @@ async function startServer() {
         });
       }
 
+      console.log('Attempting to send email via SMTP...');
       await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully!');
       res.status(200).json({ success: true });
     } catch (error) {
       console.error('Error enviando email:', error);
@@ -77,11 +95,17 @@ async function startServer() {
 
   // Vite middleware
   if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
+    try {
+      console.log('Initializing Vite middleware...');
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+      console.log('Vite middleware initialized.');
+    } catch (err) {
+      console.error('Failed to initialize Vite middleware:', err);
+    }
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
@@ -96,4 +120,6 @@ async function startServer() {
   });
 }
 
-startServer();
+startServer().catch(err => {
+  console.error('FATAL ERROR STARTING SERVER:', err);
+});

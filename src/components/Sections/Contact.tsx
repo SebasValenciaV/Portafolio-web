@@ -49,10 +49,12 @@ const RecruitersAndContact: React.FC = () => {
           console.warn(data.warning);
         }
       } else {
+        const errorText = await response.text();
+        console.error('Server error response:', errorText);
         alert(data.error || 'Error al enviar el mensaje');
       }
     } catch (error) {
-      console.error('Error enviando email:', error);
+      console.error('Fetch error details:', error);
       alert('Error de conexión. Por favor intenta más tarde.');
     } finally {
       setIsLoading(false);
