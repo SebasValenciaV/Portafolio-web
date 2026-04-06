@@ -21,38 +21,37 @@ const About: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative"
+            className="relative flex justify-center lg:justify-start"
             style={{ perspective: 1000 }}
           >
             <motion.div 
-              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02, z: 20 }}
-              className="relative z-10 rounded-3xl overflow-hidden glass-card p-2"
+              whileHover={{ rotateX: 5, rotateY: -5, scale: 1.05, z: 20 }}
+              className="relative z-10 rounded-full overflow-hidden glass-card p-3 w-64 h-64 md:w-80 md:h-80 shadow-2xl shadow-primary/20"
               style={{ transformStyle: 'preserve-3d' }}
             >
               <img
-                src="https://picsum.photos/seed/tech/800/800"
-                alt="Tech Workspace"
-                className="rounded-2xl w-full h-full object-cover aspect-square grayscale hover:grayscale-0 transition-all duration-700"
+                src="https://picsum.photos/seed/person/800/800"
+                alt="Sebastian Valencia"
+                className="rounded-full w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                 referrerPolicy="no-referrer"
               />
               <div 
-                className="absolute top-1/2 -right-8 glass p-6 rounded-2xl shadow-2xl border border-white/10 animate-float hidden md:block"
+                className="absolute top-1/2 -right-4 glass p-4 rounded-2xl shadow-2xl border border-white/10 animate-float hidden md:block"
                 style={{ transform: 'translateZ(50px) translateY(-50%)' }}
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
                     10+
                   </div>
                   <div>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Años de</p>
-                    <p className="text-sm font-bold text-white">Experiencia</p>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Años de</p>
+                    <p className="text-xs font-bold text-white">Experiencia</p>
                   </div>
                 </div>
               </div>
             </motion.div>
             {/* Decorative Elements */}
-            <div className="absolute -top-6 -left-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/20 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 bg-primary/20 rounded-full blur-[100px] -z-10" />
           </motion.div>
 
           <motion.div
