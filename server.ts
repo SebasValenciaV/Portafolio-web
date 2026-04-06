@@ -17,17 +17,32 @@ console.log('SMTP Config:', {
 
 async function startServer() {
   const app = express();
+  
+  // Basic middleware
   app.use(cors());
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // Request logging middleware
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  });
 
   // Health Check
   app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({ 
+      status: 'ok', 
+      message: 'Server is alive',
+      env: process.env.NODE_ENV,
+      smtpConfigured: !!(process.env.SMTP_USER && process.env.SMTP_PASS)
+    });
   });
 
   // API Route for Contact Form
   app.post('/api/contact', async (req, res) => {
     console.log('--- NEW CONTACT FORM SUBMISSION ---');
+    console.log('Body:', req.body);
     const { name, email, company, projectType, message } = req.body;
 
     // Validation

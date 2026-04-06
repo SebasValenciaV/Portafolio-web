@@ -17,20 +17,39 @@ const RecruitersAndContact: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  React.useEffect(() => {
+    // Check API health on mount
+    fetch('/api/health')
+      .then(res => res.json())
+      .then(data => console.log('API Health Check:', data))
+      .catch(err => console.error('API Health Check Failed:', err));
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // Use relative URL with leading slash to ensure it hits the current origin
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(formState),
       });
 
-      const data = await response.json();
+      // Try to parse as JSON, but handle non-JSON responses
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error('Non-JSON response received:', text);
+        throw new Error('Respuesta del servidor no válida (no es JSON)');
+      }
 
       if (response.ok) {
         setIsSubmitted(true);
@@ -42,20 +61,20 @@ const RecruitersAndContact: React.FC = () => {
           projectType: '',
           message: '',
         });
-        // Reset inputs manually since they are not controlled in the current implementation
         (e.target as HTMLFormElement).reset();
         
         if (data.warning) {
-          console.warn(data.warning);
+          console.warn('Server warning:', data.warning);
         }
       } else {
-        const errorText = await response.text();
-        console.error('Server error response:', errorText);
-        alert(data.error || 'Error al enviar el mensaje');
+        console.error('Server error response:', data);
+        alert(data.error || 'Error al enviar el mensaje. El servidor respondió con un error.');
       }
     } catch (error) {
-      console.error('Fetch error details:', error);
-      alert('Error de conexión. Por favor intenta más tarde.');
+      console.error('Detailed fetch error:', error);
+      // More descriptive error message for the user
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      alert(`Error de conexión: ${errorMessage}. Asegúrate de que el servidor esté funcionando.`);
     } finally {
       setIsLoading(false);
       setTimeout(() => setIsSubmitted(false), 5000);
