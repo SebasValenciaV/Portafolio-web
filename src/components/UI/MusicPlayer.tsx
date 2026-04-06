@@ -5,7 +5,7 @@ import { Music, Play, Pause, Minimize2, Maximize2, X, Volume2 } from 'lucide-rea
 import { cn } from '../../lib/utils';
 
 const MusicPlayer: React.FC = () => {
-  const { settings, updateSettings } = useApp();
+  const { settings, updateSettings, t } = useApp();
   const [isMinimized, setIsMinimized] = useState(true);
 
   if (!settings.musicEnabled) return null;
@@ -44,7 +44,7 @@ const MusicPlayer: React.FC = () => {
             <div className="p-2 rounded-xl bg-primary/10 text-primary">
               <Music size={16} />
             </div>
-            <span className="text-sm font-bold text-white uppercase tracking-wider">Ambient Music</span>
+            <span className="text-sm font-bold text-white uppercase tracking-wider">{t.music.ambientMusic}</span>
           </div>
           <div className="flex items-center gap-2">
             <button

@@ -5,7 +5,7 @@ import { X, Moon, Sun, Palette, Music, Volume2, Sparkles, Sliders, Play, Pause }
 import { cn } from '../../lib/utils';
 
 const Customizer: React.FC = () => {
-  const { settings, updateSettings } = useApp();
+  const { settings, updateSettings, t } = useApp();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const Customizer: React.FC = () => {
                 <div className="p-2 rounded-xl bg-primary/10 text-primary">
                   <Sliders size={20} />
                 </div>
-                <h2 className="text-xl font-bold text-white tracking-tight">Personalización</h2>
+                <h2 className="text-xl font-bold text-white tracking-tight">{t.customizer.title}</h2>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -102,7 +102,7 @@ const Customizer: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-widest">
                   <Palette size={16} />
-                  Color Principal
+                  {t.customizer.mainColor}
                 </div>
                 <div className="grid grid-cols-6 gap-3">
                   {colors.map((color) => (
@@ -123,7 +123,7 @@ const Customizer: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-widest">
                   {settings.isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
-                  Modo de Visualización
+                  {t.customizer.displayMode}
                 </div>
                 <div className="flex p-1 rounded-xl bg-white/5 border border-white/10">
                   <button
@@ -134,7 +134,7 @@ const Customizer: React.FC = () => {
                     )}
                   >
                     <Moon size={16} />
-                    Oscuro
+                    {t.customizer.darkMode}
                   </button>
                   <button
                     onClick={() => updateSettings({ isDarkMode: false })}
@@ -144,7 +144,7 @@ const Customizer: React.FC = () => {
                     )}
                   >
                     <Sun size={16} />
-                    Claro
+                    {t.customizer.lightMode}
                   </button>
                 </div>
               </div>
@@ -154,7 +154,7 @@ const Customizer: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-widest">
                     <Sparkles size={16} />
-                    Efectos Visuales
+                    {t.customizer.visualEffects}
                   </div>
                   <button
                     onClick={() => updateSettings({ visualEffects: !settings.visualEffects })}
@@ -172,7 +172,7 @@ const Customizer: React.FC = () => {
                 {settings.visualEffects && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                      <span>Intensidad</span>
+                      <span>{t.customizer.intensity}</span>
                       <span>{settings.effectsIntensity}%</span>
                     </div>
                     <input
@@ -187,7 +187,7 @@ const Customizer: React.FC = () => {
                     <div className="flex items-center justify-between pt-2 border-t border-white/5">
                       <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
                         {settings.effectsPaused ? <Pause size={14} /> : <Play size={14} />}
-                        Animaciones
+                        {t.customizer.animations}
                       </div>
                       <button
                         onClick={() => updateSettings({ effectsPaused: !settings.effectsPaused })}
@@ -211,7 +211,7 @@ const Customizer: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm font-bold text-slate-400 uppercase tracking-widest">
                     <Music size={16} />
-                    Música Ambiental
+                    {t.music.ambientMusic}
                   </div>
                   <button
                     onClick={() => updateSettings({ musicEnabled: !settings.musicEnabled })}
@@ -229,7 +229,7 @@ const Customizer: React.FC = () => {
                 {settings.musicEnabled && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                      <span>Volumen</span>
+                      <span>{t.customizer.volume}</span>
                       <span>{Math.round(settings.volume * 100)}%</span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -251,7 +251,7 @@ const Customizer: React.FC = () => {
 
             <div className="mt-12 pt-12 border-t border-white/5">
               <p className="text-xs text-slate-500 text-center leading-relaxed">
-                Personaliza tu experiencia para que el portafolio se adapte a tu estilo visual preferido.
+                {t.customizer.description}
               </p>
             </div>
           </motion.div>

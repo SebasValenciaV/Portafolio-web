@@ -1,10 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { MessageCircle } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 const WhatsAppButton: React.FC = () => {
+  const { t } = useApp();
   const phoneNumber = '573168859466';
-  const message = 'Hola Sebas, vi tu portafolio y me gustaría obtener más información sobre tus servicios.';
+  const message = t.whatsapp.message;
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return (

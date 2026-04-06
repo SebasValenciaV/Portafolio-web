@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
               </span>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Desarrollo de soluciones digitales inteligentes que impulsan negocios. Creación de sitios web modernos y experiencias digitales de alto impacto.
+              {t.footer.description}
             </p>
             <div className="flex gap-4">
               <a href="https://github.com/SebasValenciaV?tab=repositories" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl glass border border-white/10 text-slate-400 hover:text-white hover:bg-primary transition-all">
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Enlaces Rápidos</h4>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">{t.footer.quickLinks}</h4>
             <ul className="space-y-4">
               <li><a href="#home" className="text-slate-400 hover:text-primary transition-colors text-sm">{t.nav.home}</a></li>
               <li><a href="#about" className="text-slate-400 hover:text-primary transition-colors text-sm">{t.nav.about}</a></li>
@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div>
-            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">Contacto</h4>
+            <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-xs">{t.nav.contact}</h4>
             <ul className="space-y-4">
               <li className="flex items-center gap-3 text-slate-400 text-sm">
                 <Phone size={16} className="text-primary" />
@@ -73,7 +73,7 @@ const Footer: React.FC = () => {
 
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-slate-500 text-xs font-medium">
-            © {currentYear} Portafolio Web. Todos los derechos reservados.
+            © {currentYear} Portafolio Web. {t.footer.rights}
           </p>
           <button
             onClick={scrollToTop}

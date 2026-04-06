@@ -16,22 +16,19 @@ const ProcessAndReviews: React.FC = () => {
 
   const reviews = [
     {
-      name: "Andrés García",
-      role: "CEO",
-      company: "Fugas de Agua S.A.",
-      comment: "Excelente profesional. Transformó nuestra presencia digital y nos ayudó a captar clientes de manera mucho más eficiente.",
+      name: "Carlos Rodriguez",
+      role: "CEO, TechFlow",
+      comment: "La capacidad de Sebas para comprender problemas complejos y transformarlos en simples soluciones digitales es increíble.",
     },
     {
-      name: "Laura Martínez",
-      role: "Marketing Manager",
-      company: "Fitness Outlet",
-      comment: "El diseño es impecable y la funcionalidad del sitio superó nuestras expectativas. Altamente recomendado.",
+      name: "Elena Martinez",
+      role: "Directora de Marketing, Innova",
+      comment: "Nuestras ventas aumentaron un 40% tras el rediseño de nuestra landing page. Un profesional excepcional.",
     },
     {
-      name: "Carlos Ruiz",
-      role: "Founder",
-      company: "Tech Startup",
-      comment: "Su capacidad técnica y visión de innovación son excepcionales. Un socio tecnológico clave para nuestro crecimiento.",
+      name: "Ricardo Gomez",
+      role: "Fundador, StartupX",
+      comment: "La integración de IA que desarrolló para nuestro chatbot local cambió por completo nuestra atención al cliente.",
     },
   ];
 
@@ -55,7 +52,7 @@ const ProcessAndReviews: React.FC = () => {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl font-bold text-white mb-6"
           >
-            Metodología de Alto Impacto
+            Metodología de Trabajo
           </motion.h2>
         </div>
 
@@ -145,7 +142,7 @@ const ProcessAndReviews: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-bold">{review.name}</h4>
-                  <p className="text-xs text-slate-500 font-medium">{review.role} @ {review.company}</p>
+                  <p className="text-xs text-slate-500 font-medium">{review.role}</p>
                 </div>
               </div>
             </motion.div>

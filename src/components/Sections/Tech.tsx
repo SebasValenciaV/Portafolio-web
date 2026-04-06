@@ -15,7 +15,7 @@ const Tech: React.FC = () => {
     {
       category: t.tech.backend,
       icon: <Server size={24} className="text-primary" />,
-      skills: ['Node.js', 'Express', 'APIs REST', 'GraphQL', 'Firebase', 'Supabase'],
+      skills: ['Node.js', 'Express', 'REST APIs', 'GraphQL', 'Firebase', 'Supabase'],
     },
     {
       category: t.tech.ai,

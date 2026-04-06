@@ -15,66 +15,67 @@ import {
   Cell
 } from 'recharts';
 
-const techGrowthData = [
-  { year: '2018', value: 50, event: 'Primeros modelos Transformer' },
-  { year: '2019', value: 73, event: 'GPT-2 demuestra capacidades de texto' },
-  { year: '2020', value: 100, event: 'GPT-3 revoluciona el NLP' },
-  { year: '2021', value: 130, event: 'Auge de GitHub Copilot y AlphaFold' },
-  { year: '2022', value: 160, event: 'Lanzamiento de ChatGPT (OpenAI)' },
-  { year: '2023', value: 200, event: 'Era de los LLMs (GPT-4, Gemini)' },
-  { year: '2024', value: 250, event: 'IA Multimodal y Agentes Autónomos' },
-  { year: '2025', value: 320, event: 'IA Cuántica y Razonamiento Avanzado' },
-  { year: '2026', value: 400, event: 'AGI Temprana y Adopción Masiva' },
-];
-
-const aiAdoptionData = [
-  { year: '2018', value: 0.1, model: 'GPT-1' },
-  { year: '2019', value: 1.5, model: 'GPT-2' },
-  { year: '2020', value: 175, model: 'GPT-3' },
-  { year: '2021', value: 280, model: 'Gopher' },
-  { year: '2022', value: 540, model: 'PaLM' },
-  { year: '2023', value: 1760, model: 'GPT-4' },
-  { year: '2024', value: 5000, model: 'Gemini 1.5 / Llama 3' },
-  { year: '2025', value: 15000, model: 'Modelos Next-Gen' },
-  { year: '2026', value: 50000, model: 'Arquitecturas Distribuidas' },
-];
-
-const CustomBarTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-slate-900/95 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md z-50">
-        <p className="text-white font-bold mb-1">{label}</p>
-        <p className="text-primary font-mono text-lg mb-2">
-          ${payload[0].value} Billones USD
-        </p>
-        <p className="text-slate-400 text-xs max-w-[200px] leading-relaxed">
-          {payload[0].payload.event}
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
-
-const CustomAreaTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-slate-900/95 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md z-50">
-        <p className="text-white font-bold mb-1">{label}</p>
-        <p className="text-primary font-mono text-lg mb-2">
-          {payload[0].value}B Parámetros
-        </p>
-        <p className="text-slate-400 text-xs max-w-[200px]">
-          Hito: <span className="text-white font-bold">{payload[0].payload.model}</span>
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
-
 const Dashboard: React.FC = () => {
-  const { settings } = useApp();
+  const { settings, t } = useApp();
+
+  const techGrowthData = [
+    { year: '2018', value: 50, event: t.dashboard.techEvents.transformer },
+    { year: '2019', value: 73, event: t.dashboard.techEvents.gpt2 },
+    { year: '2020', value: 100, event: t.dashboard.techEvents.gpt3 },
+    { year: '2021', value: 130, event: t.dashboard.techEvents.copilot },
+    { year: '2022', value: 160, event: t.dashboard.techEvents.chatgpt },
+    { year: '2023', value: 200, event: t.dashboard.techEvents.llmEra },
+    { year: '2024', value: 250, event: t.dashboard.techEvents.multimodal },
+    { year: '2025', value: 320, event: t.dashboard.techEvents.quantum },
+    { year: '2026', value: 400, event: t.dashboard.techEvents.agi },
+  ];
+
+  const aiAdoptionData = [
+    { year: '2018', value: 0.1, model: 'GPT-1' },
+    { year: '2019', value: 1.5, model: 'GPT-2' },
+    { year: '2020', value: 175, model: 'GPT-3' },
+    { year: '2021', value: 280, model: 'Gopher' },
+    { year: '2022', value: 540, model: 'PaLM' },
+    { year: '2023', value: 1760, model: 'GPT-4' },
+    { year: '2024', value: 5000, model: 'Gemini 1.5 / Llama 3' },
+    { year: '2025', value: 15000, model: 'Modelos Next-Gen' },
+    { year: '2026', value: 50000, model: 'Arquitecturas Distribuidas' },
+  ];
+
+  const CustomBarTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-slate-900/95 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md z-50">
+          <p className="text-white font-bold mb-1">{label}</p>
+          <p className="text-primary font-mono text-lg mb-2">
+            ${payload[0].value} {t.dashboard.billions}
+          </p>
+          <p className="text-slate-400 text-xs max-w-[200px] leading-relaxed">
+            {payload[0].payload.event}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomAreaTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-slate-900/95 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md z-50">
+          <p className="text-white font-bold mb-1">{label}</p>
+          <p className="text-primary font-mono text-lg mb-2">
+            {payload[0].value}B {t.dashboard.parameters}
+          </p>
+          <p className="text-slate-400 text-xs max-w-[200px]">
+            {t.dashboard.milestone}: <span className="text-white font-bold">{payload[0].payload.model}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   const [time, setTime] = useState(new Date());
   const [sessionSeconds, setSessionSeconds] = useState(0);
   const [isTesting, setIsTesting] = useState(false);
@@ -83,7 +84,7 @@ const Dashboard: React.FC = () => {
   const [downloadSpeed, setDownloadSpeed] = useState<number | null>(null);
   const [uploadSpeed, setUploadSpeed] = useState<number | null>(null);
   const [testProgress, setTestProgress] = useState(0);
-  const [location, setLocation] = useState<string>('Buscando ubicación...');
+  const [location, setLocation] = useState<string>(t.dashboard.searchingLocation);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -94,17 +95,18 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setLocation(t.dashboard.searchingLocation);
     fetch('https://ipapi.co/json/')
       .then(res => res.json())
       .then(data => {
         if (data.city && data.country_name) {
           setLocation(`${data.city}, ${data.country_name}`);
         } else {
-          setLocation('Ubicación Desconocida');
+          setLocation(t.dashboard.unknownLocation);
         }
       })
-      .catch(() => setLocation('Ubicación Desconocida'));
-  }, []);
+      .catch(() => setLocation(t.dashboard.unknownLocation));
+  }, [t.dashboard.searchingLocation, t.dashboard.unknownLocation]);
 
   const formatSessionTime = (totalSeconds: number) => {
     const h = Math.floor(totalSeconds / 3600);
@@ -174,9 +176,9 @@ const Dashboard: React.FC = () => {
 
   const getLatencyStatus = (val: number | null) => {
     if (!val) return '';
-    if (val < 80) return 'Óptimo';
-    if (val < 150) return 'Aceptable';
-    return 'Lento';
+    if (val < 80) return t.dashboard.optimal;
+    if (val < 150) return t.dashboard.acceptable;
+    return t.dashboard.slow;
   };
 
   const getStrokeDashoffset = (val: number | null) => {
@@ -201,10 +203,10 @@ const Dashboard: React.FC = () => {
             Dashboard
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-            Métricas en Tiempo Real
+            {t.dashboard.title}
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Visualiza el crecimiento tecnológico y el avance de la inteligencia artificial con datos históricos reales, junto con métricas de tu sesión actual.
+            {t.dashboard.subtitle}
           </p>
         </motion.div>
 
@@ -219,7 +221,7 @@ const Dashboard: React.FC = () => {
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
               <Clock size={48} className="text-primary" />
             </div>
-            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">Hora Local</p>
+            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">{t.dashboard.localTime}</p>
             <p className="text-3xl font-bold text-white tracking-tight font-mono">
               {time.toLocaleTimeString()}
             </p>
@@ -239,12 +241,12 @@ const Dashboard: React.FC = () => {
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
               <Timer size={48} className="text-primary" />
             </div>
-            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">Tiempo de Sesión</p>
+            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">{t.dashboard.sessionTime}</p>
             <p className="text-3xl font-bold text-white tracking-tight font-mono">
               {formatSessionTime(sessionSeconds)}
             </p>
             <p className="text-xs text-slate-500 mt-2">
-              Actividad detectada
+              {t.dashboard.activityDetected}
             </p>
           </motion.div>
 
@@ -259,24 +261,24 @@ const Dashboard: React.FC = () => {
             <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
               <Cpu size={48} className="text-primary" />
             </div>
-            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">Estado IA</p>
+            <p className="text-sm text-slate-400 font-bold uppercase tracking-wider mb-2">{t.dashboard.aiStatus}</p>
             <div className="flex items-center gap-2 mb-1">
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
               <p className="text-2xl font-bold text-white tracking-tight">
-                Óptimo
+                {t.dashboard.aiOptimal}
               </p>
             </div>
             <p className="text-xs text-slate-500 mb-4">
-              Sistemas en línea
+              {t.dashboard.aiSystemsOnline}
             </p>
             <button
               onClick={() => window.dispatchEvent(new Event('open-chatbot'))}
               className="px-4 py-1.5 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors"
             >
-              Abrir Chat
+              {t.dashboard.openChat}
             </button>
           </motion.div>
 
@@ -298,7 +300,7 @@ const Dashboard: React.FC = () => {
                 {location}
               </p>
             </div>
-            <p className="text-sm text-white font-bold uppercase tracking-wider mb-2">Test de Red</p>
+            <p className="text-sm text-white font-bold uppercase tracking-wider mb-2">{t.dashboard.networkTest}</p>
             
             <div className="relative flex flex-col items-center mb-1">
               <svg width="100" height="55" viewBox="0 0 100 55" className="overflow-visible">
@@ -325,7 +327,7 @@ const Dashboard: React.FC = () => {
             <div className="h-4 mb-2">
               {(latency !== null || isTesting) && (
                 <span className="text-xs font-bold" style={{ color: getLatencyColor(currentPing || latency) }}>
-                  {isTesting ? 'Midiendo...' : getLatencyStatus(latency)}
+                  {isTesting ? t.dashboard.measuring : getLatencyStatus(latency)}
                 </span>
               )}
             </div>
@@ -333,13 +335,13 @@ const Dashboard: React.FC = () => {
             <div className="flex w-full justify-between px-2 mb-3">
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-1 text-[10px] text-slate-400 uppercase">
-                  <Download size={10} /> Descarga
+                  <Download size={10} /> {t.dashboard.download}
                 </div>
                 <span className="text-sm font-bold text-white">{downloadSpeed !== null ? downloadSpeed : '--'} <span className="text-[10px] text-slate-500">Mbps</span></span>
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-1 text-[10px] text-slate-400 uppercase">
-                  <Upload size={10} /> Carga
+                  <Upload size={10} /> {t.dashboard.upload}
                 </div>
                 <span className="text-sm font-bold text-white">{uploadSpeed !== null ? uploadSpeed : '--'} <span className="text-[10px] text-slate-500">Mbps</span></span>
               </div>
@@ -358,7 +360,7 @@ const Dashboard: React.FC = () => {
               )}
               <span className="relative z-10 flex items-center justify-center gap-1">
                 {isTesting ? <RefreshCw size={12} className="animate-spin" /> : null}
-                {isTesting ? 'Calculando' : latency !== null ? 'Repetir Test' : 'Iniciar Test'}
+                {isTesting ? t.dashboard.calculating : latency !== null ? t.dashboard.repeatTest : t.dashboard.startTest}
               </span>
             </button>
           </motion.div>
@@ -375,7 +377,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <TrendingUp size={20} className="text-primary" />
-                Inversión Global en IA
+                {t.dashboard.globalAiInvestment}
               </h3>
             </div>
             <div className="h-[300px] w-full">
@@ -408,7 +410,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
                 <Activity size={20} className="text-primary" />
-                Evolución de Modelos IA (Parámetros)
+                {t.dashboard.aiModelEvolution}
               </h3>
             </div>
             <div className="h-[300px] w-full">

@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { X, Trophy, Crosshair, Clock, RotateCcw, Play } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
 interface SpaceGameProps {
   onClose: () => void;
 }
 
 const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
+  const { t } = useApp();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [stats, setStats] = useState({ score: 0, enemies: 0, level: 1, time: 0 });
@@ -397,8 +399,8 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
     ctx.fillStyle = 'white';
     ctx.font = 'bold 20px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(`Score: ${state.score}`, 20, 40);
-    ctx.fillText(`Level: ${state.level}`, 20, 70);
+    ctx.fillText(`${t.game.score}: ${state.score}`, 20, 40);
+    ctx.fillText(`${t.game.level}: ${state.level}`, 20, 70);
     
     // Player Health Bar
     ctx.fillStyle = 'rgba(255,255,255,0.2)';
@@ -473,21 +475,21 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
           <div className="w-24 h-24 mx-auto bg-primary/20 rounded-full flex items-center justify-center mb-8 shadow-[0_0_50px_rgba(var(--primary-rgb),0.3)]">
             <Play size={40} className="text-primary ml-2" />
           </div>
-          <h2 className="text-4xl font-bold text-white mb-4">Space Defender</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">{t.game.title}</h2>
           <p className="text-slate-400 mb-8 leading-relaxed">
-            Defiende la galaxia. Esquiva planetas, destruye enemigos y alcanza el nivel máximo.
+            {t.game.description}
           </p>
           
           <div className="bg-slate-900/50 rounded-2xl p-6 mb-8 text-left space-y-4 border border-white/5">
-            <h3 className="text-white font-bold mb-2">Controles:</h3>
+            <h3 className="text-white font-bold mb-2">{t.game.controls}:</h3>
             <div className="flex items-center gap-3 text-sm text-slate-300">
-              <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">W A S D</kbd> o <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">Flechas</kbd> para moverte
+              <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">W A S D</kbd> o <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">{t.game.movement}</kbd>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-300">
-              <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">Espacio</kbd> o <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">Click</kbd> para disparar
+              <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">{t.game.shoot}</kbd> o <kbd className="px-2 py-1 bg-white/10 rounded-lg font-mono">Click</kbd>
             </div>
             <div className="flex items-center gap-3 text-sm text-slate-300 pt-2 border-t border-white/10">
-              <span className="text-primary font-bold">Móvil:</span> Toca y arrastra para moverte y disparar.
+              <span className="text-primary font-bold">{t.game.mobile}:</span> {t.game.mobileDesc}
             </div>
           </div>
 
@@ -495,35 +497,35 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
             onClick={initGame}
             className="w-full py-4 rounded-2xl bg-primary text-white font-bold text-lg hover:scale-105 transition-transform shadow-xl shadow-primary/20"
           >
-            Iniciar Misión
+            {t.game.startMission}
           </button>
         </div>
       )}
 
       {gameState === 'gameover' && (
         <div className="relative z-10 glass-card p-12 rounded-[3rem] max-w-lg w-full mx-4 text-center border border-white/10 shadow-2xl">
-          <h2 className="text-4xl font-bold text-red-500 mb-2">Misión Fallida</h2>
-          <p className="text-slate-400 mb-8">Tu nave ha sido destruida.</p>
+          <h2 className="text-4xl font-bold text-red-500 mb-2">{t.game.missionFailed}</h2>
+          <p className="text-slate-400 mb-8">{t.game.shipDestroyed}</p>
           
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
               <Trophy className="text-yellow-500 mx-auto mb-2" size={24} />
-              <p className="text-xs text-slate-500 uppercase font-bold">Puntaje</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">{t.game.score}</p>
               <p className="text-2xl font-bold text-white">{stats.score}</p>
             </div>
             <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
               <Crosshair className="text-primary mx-auto mb-2" size={24} />
-              <p className="text-xs text-slate-500 uppercase font-bold">Enemigos</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">{t.game.enemies}</p>
               <p className="text-2xl font-bold text-white">{stats.enemies}</p>
             </div>
             <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
               <div className="text-purple-500 font-bold text-2xl mx-auto mb-2">Lv</div>
-              <p className="text-xs text-slate-500 uppercase font-bold">Nivel</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">{t.game.level}</p>
               <p className="text-2xl font-bold text-white">{stats.level}</p>
             </div>
             <div className="bg-slate-900/50 p-4 rounded-2xl border border-white/5">
               <Clock className="text-emerald-500 mx-auto mb-2" size={24} />
-              <p className="text-xs text-slate-500 uppercase font-bold">Tiempo</p>
+              <p className="text-xs text-slate-500 uppercase font-bold">{t.game.time}</p>
               <p className="text-2xl font-bold text-white">{stats.time}s</p>
             </div>
           </div>
@@ -533,7 +535,7 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
             className="w-full py-4 rounded-2xl bg-primary text-white font-bold text-lg hover:scale-105 transition-transform shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
           >
             <RotateCcw size={20} />
-            Jugar de Nuevo
+            {t.game.playAgain}
           </button>
         </div>
       )}

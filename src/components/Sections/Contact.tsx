@@ -15,12 +15,38 @@ const RecruitersAndContact: React.FC = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formState);
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 5000);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Form submitted:', data);
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        setError(data.error || 'Failed to send message');
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socialLinks = [
@@ -45,10 +71,10 @@ const RecruitersAndContact: React.FC = () => {
               {t.recruiters.title}
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
-              ¿Buscas talento tecnológico?
+              {t.recruiters.heading}
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-              He desarrollado proyectos de alto impacto utilizando las tecnologías más modernas del mercado. Mi enfoque está en la escalabilidad, el rendimiento y la experiencia de usuario.
+              {t.recruiters.description}
             </p>
             
             <div className="flex flex-wrap justify-center gap-6">
@@ -63,7 +89,7 @@ const RecruitersAndContact: React.FC = () => {
                 className="px-8 py-4 rounded-2xl glass border border-white/10 text-white font-bold flex items-center gap-3 hover:bg-white/10 hover:scale-105 transition-all"
               >
                 <Github size={20} />
-                Ver Repositorios
+                {t.recruiters.viewRepos}
               </a>
             </div>
           </div>
@@ -85,10 +111,10 @@ const RecruitersAndContact: React.FC = () => {
                 {t.contact.title}
               </span>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight" style={{ transform: 'translateZ(20px)' }}>
-                Iniciemos tu próximo gran proyecto digital.
+                {t.contact.subtitle}
               </h2>
               <p className="text-lg text-slate-400 mb-12 leading-relaxed" style={{ transform: 'translateZ(15px)' }}>
-                Estoy listo para ayudarte a transformar tus ideas en soluciones tecnológicas de alto impacto. Contáctame hoy mismo.
+                {t.contact.description}
               </p>
 
               <div className="space-y-8 mb-12" style={{ transform: 'translateZ(25px)' }}>
@@ -97,7 +123,7 @@ const RecruitersAndContact: React.FC = () => {
                     <Phone size={24} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Llámanos</p>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">{t.contact.callUs}</p>
                     <p className="text-xl font-bold text-white">+57 3168859466</p>
                   </div>
                 </div>
@@ -106,7 +132,7 @@ const RecruitersAndContact: React.FC = () => {
                     <Mail size={24} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Email</p>
+                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">{t.contact.email}</p>
                     <p className="text-xl font-bold text-white">sebasvalenciav.gia@gmail.com</p>
                   </div>
                 </div>
@@ -146,7 +172,7 @@ const RecruitersAndContact: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="Tu nombre"
+                      placeholder={t.contact.namePlaceholder}
                       className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                     />
@@ -159,7 +185,7 @@ const RecruitersAndContact: React.FC = () => {
                     <input
                       type="email"
                       required
-                      placeholder="tu@email.com"
+                      placeholder={t.contact.emailPlaceholder}
                       className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                     />
@@ -174,7 +200,7 @@ const RecruitersAndContact: React.FC = () => {
                     <Building className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
                       type="text"
-                      placeholder="Nombre de tu empresa"
+                      placeholder={t.contact.companyPlaceholder}
                       className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                       onChange={(e) => setFormState({ ...formState, company: e.target.value })}
                     />
@@ -188,11 +214,11 @@ const RecruitersAndContact: React.FC = () => {
                       className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all appearance-none"
                       onChange={(e) => setFormState({ ...formState, projectType: e.target.value })}
                     >
-                      <option value="" className="bg-slate-900">Seleccionar tipo</option>
-                      <option value="web" className="bg-slate-900">Sitio Web</option>
-                      <option value="app" className="bg-slate-900">Aplicación Web</option>
-                      <option value="automation" className="bg-slate-900">Automatización</option>
-                      <option value="other" className="bg-slate-900">Otro</option>
+                      <option value="" className="bg-slate-900">{t.contact.projectTypePlaceholder}</option>
+                      <option value="web" className="bg-slate-900">{t.contact.projectTypeWeb}</option>
+                      <option value="app" className="bg-slate-900">{t.contact.projectTypeApp}</option>
+                      <option value="automation" className="bg-slate-900">{t.contact.projectTypeAutomation}</option>
+                      <option value="other" className="bg-slate-900">{t.contact.projectTypeOther}</option>
                     </select>
                   </div>
                 </div>
@@ -205,27 +231,44 @@ const RecruitersAndContact: React.FC = () => {
                   <textarea
                     required
                     rows={4}
-                    placeholder="Cuéntame sobre tu proyecto..."
+                    placeholder={t.contact.messagePlaceholder}
                     className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                   />
                 </div>
               </div>
 
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-red-500 text-sm font-bold text-center"
+                >
+                  {error}
+                </motion.p>
+              )}
+
               <button
                 type="submit"
-                disabled={isSubmitted}
+                disabled={isSubmitted || isSubmitting}
                 className={cn(
                   "w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-2xl group",
                   isSubmitted 
                     ? "bg-green-500 text-white cursor-default" 
-                    : "bg-primary text-white hover:scale-[1.02] shadow-primary/30"
+                    : isSubmitting
+                      ? "bg-primary/50 text-white/50 cursor-wait"
+                      : "bg-primary text-white hover:scale-[1.02] shadow-primary/30"
                 )}
               >
                 {isSubmitted ? (
                   <>
                     <CheckCircle2 size={20} />
-                    ¡Mensaje Enviado!
+                    {t.contact.success}
+                  </>
+                ) : isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Enviando...
                   </>
                 ) : (
                   <>

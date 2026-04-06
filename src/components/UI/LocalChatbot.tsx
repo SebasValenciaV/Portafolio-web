@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, Send, X, Minimize2, Maximize2, User, Bot, HelpCircle, RotateCcw, Info, Phone, MapPin, Clock, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ChatbotEngine, ChatMessage } from '../../lib/chatbot/engine';
+import { useApp } from '../../context/AppContext';
 
 const ChatbotLocal: React.FC = () => {
+  const { t } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -15,20 +17,29 @@ const ChatbotLocal: React.FC = () => {
 
   // Initialize engine and load history
   useEffect(() => {
+    const handleOpen = () => {
+      setIsOpen(true);
+      setIsMinimized(false);
+    };
+    window.addEventListener('open-chatbot', handleOpen);
+    return () => window.removeEventListener('open-chatbot', handleOpen);
+  }, []);
+
+  useEffect(() => {
     if (!engineRef.current) {
       engineRef.current = new ChatbotEngine();
       const history = engineRef.current.getHistory();
       if (history.length === 0) {
         setMessages([{ 
           role: 'bot', 
-          text: '¡Hola! Soy tu asistente virtual inteligente. 👋\n\nEstoy aquí para ayudarte a conocer mejor este sitio, mis servicios, tecnologías y experiencia. Todo funciona de forma local y privada.\n\n¿En qué puedo ayudarte hoy? Puedes usar los botones de abajo o escribirme directamente.',
+          text: t.chatbot.welcome,
           timestamp: Date.now()
         }]);
       } else {
         setMessages(history);
       }
     }
-  }, []);
+  }, [t.chatbot.welcome]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -52,7 +63,7 @@ const ChatbotLocal: React.FC = () => {
       if (userMessage.toLowerCase() === '/limpiar') {
         setMessages([{ 
           role: 'bot', 
-          text: 'Historial de conversación limpiado. 👋\n\n¿En qué puedo ayudarte ahora?',
+          text: t.chatbot.cleaned,
           timestamp: Date.now()
         }]);
       } else {
@@ -60,31 +71,31 @@ const ChatbotLocal: React.FC = () => {
       }
     } catch (error) {
       console.error('Chatbot Error:', error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Ups, algo salió mal en mi lógica local.', timestamp: Date.now() }]);
+      setMessages(prev => [...prev, { role: 'bot', text: t.chatbot.error, timestamp: Date.now() }]);
     } finally {
       setIsTyping(false);
     }
-  }, [input, isTyping]);
+  }, [input, isTyping, t.chatbot.cleaned, t.chatbot.error]);
 
   const resetConversation = () => {
     if (engineRef.current) {
       engineRef.current.clearHistory();
       setMessages([{ 
         role: 'bot', 
-        text: '¡Hola! Soy tu asistente virtual inteligente. 👋\n\nEstoy aquí para ayudarte a conocer mejor este sitio, mis servicios, tecnologías y experiencia. Todo funciona de forma local y privada.\n\n¿En qué puedo ayudarte hoy? Puedes usar los botones de abajo o escribirme directamente.',
+        text: t.chatbot.welcome,
         timestamp: Date.now()
       }]);
     }
   };
 
   const SUGGESTED_QUESTIONS = [
-    { label: 'Servicios', icon: <Info size={12} />, text: '¿Qué servicios ofrecen?' },
-    { label: 'Portafolio', icon: <Bot size={12} />, text: '¿Puedo ver tu portafolio?' },
-    { label: 'Tecnologías', icon: <Sparkles size={12} />, text: '¿Qué tecnologías usas?' },
-    { label: 'Experiencia', icon: <Clock size={12} />, text: '¿Cuánta experiencia tienes?' },
-    { label: 'Precios', icon: <HelpCircle size={12} />, text: '¿Cuánto cuestan los servicios?' },
-    { label: 'Contacto', icon: <Phone size={12} />, text: '¿Cómo puedo contactarlos?' },
-    { label: 'Ubicación', icon: <MapPin size={12} />, text: '¿Dónde están ubicados?' },
+    { label: t.chatbot.services, icon: <Info size={12} />, text: t.language === 'es' ? '¿Qué servicios ofrecen?' : 'What services do you offer?' },
+    { label: t.chatbot.portfolio, icon: <Bot size={12} />, text: t.language === 'es' ? '¿Puedo ver tu portafolio?' : 'Can I see your portfolio?' },
+    { label: t.chatbot.tech, icon: <Sparkles size={12} />, text: t.language === 'es' ? '¿Qué tecnologías usas?' : 'What technologies do you use?' },
+    { label: t.chatbot.experience, icon: <Clock size={12} />, text: t.language === 'es' ? '¿Cuánta experiencia tienes?' : 'How much experience do you have?' },
+    { label: t.chatbot.prices, icon: <HelpCircle size={12} />, text: t.language === 'es' ? '¿Cuánto cuestan los servicios?' : 'How much do the services cost?' },
+    { label: t.chatbot.contact, icon: <Phone size={12} />, text: t.language === 'es' ? '¿Cómo puedo contactarlos?' : 'How can I contact you?' },
+    { label: t.chatbot.location, icon: <MapPin size={12} />, text: t.language === 'es' ? '¿Dónde están ubicados?' : 'Where are you located?' },
   ];
 
   return (
@@ -128,10 +139,10 @@ const ChatbotLocal: React.FC = () => {
                   <Bot size={24} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">Asistente Local</h3>
+                  <h3 className="text-sm font-bold text-white">{t.chatbot.assistantName}</h3>
                   <div className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">100% Offline</span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.chatbot.offline}</span>
                   </div>
                 </div>
               </div>
@@ -139,7 +150,7 @@ const ChatbotLocal: React.FC = () => {
                 <button 
                   onClick={resetConversation}
                   className="p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
-                  title="Reiniciar conversación"
+                  title={t.chatbot.resetTitle}
                 >
                   <RotateCcw size={16} />
                 </button>
@@ -209,7 +220,7 @@ const ChatbotLocal: React.FC = () => {
                 <div className="px-6 py-3 border-t border-white/5 bg-white/2">
                   <div className="flex items-center gap-2 mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                     <HelpCircle size={12} />
-                    <span>Preguntas frecuentes</span>
+                    <span>{t.chatbot.faq}</span>
                   </div>
                   <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
                     {SUGGESTED_QUESTIONS.map((q, i) => (
@@ -234,7 +245,7 @@ const ChatbotLocal: React.FC = () => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                      placeholder="Escribe tu duda o /ayuda..."
+                      placeholder={t.chatbot.placeholder}
                       className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                       disabled={isTyping}
                     />
@@ -242,13 +253,13 @@ const ChatbotLocal: React.FC = () => {
                       onClick={() => handleSend()}
                       disabled={!input.trim() || isTyping}
                       className="p-4 rounded-2xl bg-primary text-white hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-xl shadow-primary/30"
-                      aria-label="Enviar mensaje"
+                      aria-label={t.chatbot.placeholder}
                     >
                       <Send size={20} />
                     </button>
                   </div>
                   <p className="mt-3 text-[10px] text-center text-slate-500 font-medium">
-                    Funciona localmente. Prueba comandos como /servicios o /contacto.
+                    {t.chatbot.localInfo}
                   </p>
                 </div>
               </>
