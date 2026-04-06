@@ -15,13 +15,11 @@ const RecruitersAndContact: React.FC = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
+    setIsLoading(true);
 
     try {
       const response = await fetch('/api/contact', {
@@ -35,17 +33,30 @@ const RecruitersAndContact: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Form submitted:', data);
         setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 5000);
+        // Reset form
+        setFormState({
+          name: '',
+          email: '',
+          company: '',
+          projectType: '',
+          message: '',
+        });
+        // Reset inputs manually since they are not controlled in the current implementation
+        (e.target as HTMLFormElement).reset();
+        
+        if (data.warning) {
+          console.warn(data.warning);
+        }
       } else {
-        setError(data.error || 'Failed to send message');
+        alert(data.error || 'Error al enviar el mensaje');
       }
-    } catch (err) {
-      console.error('Error submitting form:', err);
-      setError('An error occurred. Please try again later.');
+    } catch (error) {
+      console.error('Error enviando email:', error);
+      alert('Error de conexión. Por favor intenta más tarde.');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
+      setTimeout(() => setIsSubmitted(false), 5000);
     }
   };
 
@@ -238,26 +249,15 @@ const RecruitersAndContact: React.FC = () => {
                 </div>
               </div>
 
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-red-500 text-sm font-bold text-center"
-                >
-                  {error}
-                </motion.p>
-              )}
-
               <button
                 type="submit"
-                disabled={isSubmitted || isSubmitting}
+                disabled={isSubmitted || isLoading}
                 className={cn(
                   "w-full py-5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-2xl group",
                   isSubmitted 
                     ? "bg-green-500 text-white cursor-default" 
-                    : isSubmitting
-                      ? "bg-primary/50 text-white/50 cursor-wait"
-                      : "bg-primary text-white hover:scale-[1.02] shadow-primary/30"
+                    : "bg-primary text-white hover:scale-[1.02] shadow-primary/30",
+                  isLoading && "opacity-80 cursor-wait"
                 )}
               >
                 {isSubmitted ? (
@@ -265,7 +265,7 @@ const RecruitersAndContact: React.FC = () => {
                     <CheckCircle2 size={20} />
                     {t.contact.success}
                   </>
-                ) : isSubmitting ? (
+                ) : isLoading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Enviando...
