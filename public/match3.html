@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Match-3 Premium</title>
+    <style>
+        :root {
+            --primary: #ffcc00;
+            --secondary: #ff6600;
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.1);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            max-height: 900px;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        /* UI Header */
+        #ui-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .ui-box {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .ui-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+
+        .ui-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Game Board */
+        #canvas-wrapper {
+            position: relative;
+            flex-grow: 1;
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            border: 4px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            touch-action: none;
+        }
+
+        /* Overlays */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .overlay h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, #fbbf24, #d97706);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #92400e, 0 10px 20px rgba(0,0,0,0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+            text-transform: uppercase;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #92400e, 0 5px 10px rgba(0,0,0,0.4);
+        }
+
+        /* Combo Text */
+        #combo-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            font-weight: 900;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+        }
+
+        .animate-combo {
+            animation: comboPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes comboPop {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -70%) scale(1.2); opacity: 0; }
+        }
+
+        /* Responsive scaling */
+        @media (max-width: 400px) {
+            .ui-value { font-size: 16px; }
+            .overlay h1 { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="ui-header">
+            <div class="ui-box">
+                <div class="ui-label">Nivel</div>
+                <div id="level-val" class="ui-value">1</div>
+            </div>
+            <div class="ui-box">
+                <div class="ui-label">Puntaje</div>
+                <div id="score-val" class="ui-value">0</div>
+            </div>
+            <div class="ui-box">
+                <div class="ui-label">Movimientos</div>
+                <div id="moves-val" class="ui-value">20</div>
+            </div>
+        </div>
+
+        <div id="canvas-wrapper">
+            <canvas id="gameCanvas"></canvas>
+            <div id="combo-display">COMBO!</div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="overlay active">
+            <h1 style="color: var(--primary); -webkit-text-fill-color: initial;">MATCH MASTER<br><span style="font-size: 24px; color: white;">PREMIUM EDITION</span></h1>
+            <button id="start-btn" class="btn">Jugar</button>
+        </div>
+
+        <!-- Win Screen -->
+        <div id="win-screen" class="overlay">
+            <h1>¡VICTORIA!</h1>
+            <div class="ui-box" style="margin-bottom: 30px; min-width: 200px;">
+                <div class="ui-label">Puntaje Final</div>
+                <div id="final-score-win" class="ui-value">0</div>
+            </div>
+            <button id="next-btn" class="btn">Siguiente</button>
+        </div>
+
+        <!-- Lose Screen -->
+        <div id="lose-screen" class="overlay">
+            <h1>¡SIN MOVIMIENTOS!</h1>
+            <div class="ui-box" style="margin-bottom: 30px; min-width: 200px;">
+                <div class="ui-label">Puntaje</div>
+                <div id="final-score-lose" class="ui-value">0</div>
+            </div>
+            <button id="retry-btn" class="btn">Reintentar</button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * MATCH-3 PREMIUM ENGINE
+         * Logic, Render, Physics, Particles
+         */
+
+        const CONFIG = {
+            rows: 8,
+            cols: 8,
+            tileSize: 0, // Calculated dynamically
+            colors: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#a855f7', '#f97316'],
+            animSpeed: 0.15,
+            matchMin: 3,
+            types: {
+                NORMAL: 'normal',
+                ROCKET_H: 'rocket_h',
+                ROCKET_V: 'rocket_v',
+                BOMB: 'bomb',
+                COLOR_BOMB: 'color_bomb'
+            }
+        };
+
+        class Game {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.grid = [];
+                this.state = 'START'; // START, IDLE, SWAPPING, MATCHING, FALLING, SHUFFLING
+                this.score = 0;
+                this.level = 1;
+                this.moves = 20;
+                this.targetScore = 1500;
+                this.selectedTile = null;
+                this.particles = [];
+                this.animations = [];
+                this.combo = 0;
+                this.lastInteractionTime = Date.now();
+                this.hint = null;
+
+                this.init();
+                this.bindEvents();
+                this.loop();
+            }
+
+            init() {
+                this.resize();
+                this.generateGrid();
+                this.updateUI();
+            }
+
+            resize() {
+                const wrapper = document.getElementById('canvas-wrapper');
+                const size = Math.min(wrapper.clientWidth, wrapper.clientHeight) - 10;
+                this.canvas.width = size;
+                this.canvas.height = size;
+                CONFIG.tileSize = size / CONFIG.cols;
+            }
+
+            generateGrid() {
+                this.grid = [];
+                for (let r = 0; r < CONFIG.rows; r++) {
+                    this.grid[r] = [];
+                    for (let c = 0; c < CONFIG.cols; c++) {
+                        this.grid[r][c] = this.createRandomTile(r, c);
+                    }
+                }
+
+                // Ensure no matches at start
+                while (this.findMatches().length > 0) {
+                    for (let r = 0; r < CONFIG.rows; r++) {
+                        for (let c = 0; c < CONFIG.cols; c++) {
+                            this.grid[r][c] = this.createRandomTile(r, c);
+                        }
+                    }
+                }
+            }
+
+            createRandomTile(r, c, colorIdx = -1) {
+                const idx = colorIdx === -1 ? Math.floor(Math.random() * CONFIG.colors.length) : colorIdx;
+                return {
+                    r, c,
+                    x: c * CONFIG.tileSize,
+                    y: r * CONFIG.tileSize,
+                    targetX: c * CONFIG.tileSize,
+                    targetY: r * CONFIG.tileSize,
+                    color: CONFIG.colors[idx],
+                    colorIdx: idx,
+                    type: CONFIG.types.NORMAL,
+                    scale: 1,
+                    alpha: 1,
+                    isNew: false
+                };
+            }
+
+            bindEvents() {
+                window.addEventListener('resize', () => this.resize());
+
+                const handleStart = (e) => {
+                    if (this.state !== 'IDLE') return;
+                    const pos = this.getMousePos(e);
+                    const c = Math.floor(pos.x / CONFIG.tileSize);
+                    const r = Math.floor(pos.y / CONFIG.tileSize);
+                    if (this.isValidPos(r, c)) {
+                        this.selectedTile = { r, c };
+                        this.lastInteractionTime = Date.now();
+                        this.hint = null;
+                    }
+                };
+
+                const handleMove = (e) => {
+                    if (this.state !== 'IDLE' || !this.selectedTile) return;
+                    const pos = this.getMousePos(e);
+                    const c = Math.floor(pos.x / CONFIG.tileSize);
+                    const r = Math.floor(pos.y / CONFIG.tileSize);
+
+                    if (this.isValidPos(r, c) && (r !== this.selectedTile.r || c !== this.selectedTile.c)) {
+                        const dr = Math.abs(r - this.selectedTile.r);
+                        const dc = Math.abs(c - this.selectedTile.c);
+
+                        if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
+                            this.swapTiles(this.selectedTile.r, this.selectedTile.c, r, c);
+                            this.selectedTile = null;
+                        }
+                    }
+                };
+
+                const handleEnd = () => {
+                    this.selectedTile = null;
+                };
+
+                this.canvas.addEventListener('mousedown', handleStart);
+                this.canvas.addEventListener('mousemove', handleMove);
+                this.canvas.addEventListener('mouseup', handleEnd);
+
+                this.canvas.addEventListener('touchstart', (e) => handleStart(e.touches[0]));
+                this.canvas.addEventListener('touchmove', (e) => handleMove(e.touches[0]));
+                this.canvas.addEventListener('touchend', handleEnd);
+
+                document.getElementById('start-btn').onclick = () => this.startGame();
+                document.getElementById('next-btn').onclick = () => this.nextLevel();
+                document.getElementById('retry-btn').onclick = () => this.startGame();
+            }
+
+            getMousePos(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                return {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+
+            isValidPos(r, c) {
+                return r >= 0 && r < CONFIG.rows && c >= 0 && c < CONFIG.cols;
+            }
+
+            startGame() {
+                this.score = 0;
+                this.moves = 20;
+                this.level = 1;
+                this.targetScore = 1500;
+                this.generateGrid();
+                this.updateUI();
+                document.querySelectorAll('.overlay').forEach(el => el.classList.remove('active'));
+                this.state = 'IDLE';
+            }
+
+            nextLevel() {
+                this.level++;
+                this.moves = 20 + this.level;
+                this.targetScore += 1000;
+                this.generateGrid();
+                this.updateUI();
+                document.querySelectorAll('.overlay').forEach(el => el.classList.remove('active'));
+                this.state = 'IDLE';
+            }
+
+            updateUI() {
+                document.getElementById('score-val').innerText = this.score;
+                document.getElementById('moves-val').innerText = this.moves;
+                document.getElementById('level-val').innerText = this.level;
+            }
+
+            swapTiles(r1, c1, r2, c2, isReverting = false) {
+                this.state = 'SWAPPING';
+                const t1 = this.grid[r1][c1];
+                const t2 = this.grid[r2][c2];
+
+                // Update logical grid
+                this.grid[r1][c1] = t2;
+                this.grid[r2][c2] = t1;
+
+                // Set targets for animation
+                t1.targetX = c2 * CONFIG.tileSize;
+                t1.targetY = r2 * CONFIG.tileSize;
+                t1.r = r2; t1.c = c2;
+
+                t2.targetX = c1 * CONFIG.tileSize;
+                t2.targetY = r1 * CONFIG.tileSize;
+                t2.r = r1; t2.c = c1;
+
+                if (!isReverting) {
+                    this.moves--;
+                    this.updateUI();
+                    setTimeout(() => {
+                        const matches = this.findMatches();
+                        if (matches.length > 0) {
+                            this.processMatches(matches);
+                        } else {
+                            this.swapTiles(r2, c2, r1, c1, true);
+                        }
+                    }, 200);
+                } else {
+                    setTimeout(() => this.state = 'IDLE', 200);
+                }
+            }
+
+            findMatches() {
+                let matches = [];
+
+                // Horizontal
+                for (let r = 0; r < CONFIG.rows; r++) {
+                    let count = 1;
+                    for (let c = 0; c < CONFIG.cols; c++) {
+                        if (c < CONFIG.cols - 1 && this.grid[r][c].colorIdx === this.grid[r][c+1].colorIdx && this.grid[r][c].type !== CONFIG.types.COLOR_BOMB) {
+                            count++;
+                        } else {
+                            if (count >= 3) {
+                                let match = [];
+                                for (let i = 0; i < count; i++) match.push(this.grid[r][c - i]);
+                                matches.push(match);
+                            }
+                            count = 1;
+                        }
+                    }
+                }
+
+                // Vertical
+                for (let c = 0; c < CONFIG.cols; c++) {
+                    let count = 1;
+                    for (let r = 0; r < CONFIG.rows; r++) {
+                        if (r < CONFIG.rows - 1 && this.grid[r][c].colorIdx === this.grid[r+1][c].colorIdx && this.grid[r][c].type !== CONFIG.types.COLOR_BOMB) {
+                            count++;
+                        } else {
+                            if (count >= 3) {
+                                let match = [];
+                                for (let i = 0; i < count; i++) match.push(this.grid[r - i][c]);
+                                matches.push(match);
+                            }
+                            count = 1;
+                        }
+                    }
+                }
+
+                return matches;
+            }
+
+            processMatches(matches) {
+                this.state = 'MATCHING';
+                this.combo++;
+                if (this.combo > 1) this.showCombo();
+
+                let toDestroy = new Set();
+                let specialToCreate = [];
+
+                matches.forEach(match => {
+                    match.forEach(t => toDestroy.add(t));
+                    
+                    // Special logic
+                    if (match.length === 4) {
+                        const mid = match[1];
+                        specialToCreate.push({ r: mid.r, c: mid.c, type: match[0].r === match[1].r ? CONFIG.types.ROCKET_V : CONFIG.types.ROCKET_H, colorIdx: match[0].colorIdx });
+                    } else if (match.length >= 5) {
+                        const mid = match[2];
+                        specialToCreate.push({ r: mid.r, c: mid.c, type: CONFIG.types.COLOR_BOMB, colorIdx: -1 });
+                    }
+                });
+
+                // Destroy
+                toDestroy.forEach(tile => {
+                    this.createExplosion(tile.x + CONFIG.tileSize/2, tile.y + CONFIG.tileSize/2, tile.color);
+                    this.score += 10 * this.combo;
+                    this.grid[tile.r][tile.c] = null;
+                });
+
+                // Create specials
+                specialToCreate.forEach(s => {
+                    const tile = this.createRandomTile(s.r, s.c, s.colorIdx);
+                    tile.type = s.type;
+                    if (s.type === CONFIG.types.COLOR_BOMB) tile.color = '#ffffff';
+                    this.grid[s.r][s.c] = tile;
+                });
+
+                this.updateUI();
+                
+                setTimeout(() => this.applyGravity(), 300);
+            }
+
+            applyGravity() {
+                this.state = 'FALLING';
+                let maxFall = 0;
+
+                for (let c = 0; c < CONFIG.cols; c++) {
+                    let emptySlots = 0;
+                    for (let r = CONFIG.rows - 1; r >= 0; r--) {
+                        if (this.grid[r][c] === null) {
+                            emptySlots++;
+                        } else if (emptySlots > 0) {
+                            const tile = this.grid[r][c];
+                            this.grid[r + emptySlots][c] = tile;
+                            this.grid[r][c] = null;
+                            tile.r = r + emptySlots;
+                            tile.targetY = tile.r * CONFIG.tileSize;
+                            maxFall = Math.max(maxFall, emptySlots);
+                        }
+                    }
+
+                    // Fill new
+                    for (let i = 0; i < emptySlots; i++) {
+                        const r = emptySlots - 1 - i;
+                        const tile = this.createRandomTile(r, c);
+                        tile.y = - (i + 1) * CONFIG.tileSize;
+                        tile.isNew = true;
+                        this.grid[r][c] = tile;
+                    }
+                }
+
+                setTimeout(() => {
+                    const matches = this.findMatches();
+                    if (matches.length > 0) {
+                        this.processMatches(matches);
+                    } else {
+                        this.combo = 0;
+                        this.state = 'IDLE';
+                        this.checkGameOver();
+                        this.checkNoMoves();
+                    }
+                }, 400);
+            }
+
+            checkGameOver() {
+                if (this.score >= this.targetScore) {
+                    this.state = 'WIN';
+                    document.getElementById('final-score-win').innerText = this.score;
+                    document.getElementById('win-screen').classList.add('active');
+                } else if (this.moves <= 0) {
+                    this.state = 'LOSE';
+                    document.getElementById('final-score-lose').innerText = this.score;
+                    document.getElementById('lose-screen').classList.add('active');
+                }
+            }
+
+            checkNoMoves() {
+                // Simplified check for possible matches
+                // If no moves, reshuffle
+                if (!this.hasPossibleMoves()) {
+                    this.reshuffle();
+                }
+            }
+
+            hasPossibleMoves() {
+                // Check all adjacent swaps
+                for (let r = 0; r < CONFIG.rows; r++) {
+                    for (let c = 0; c < CONFIG.cols; c++) {
+                        // Swap right
+                        if (c < CONFIG.cols - 1) {
+                            if (this.testSwap(r, c, r, c + 1)) return true;
+                        }
+                        // Swap down
+                        if (r < CONFIG.rows - 1) {
+                            if (this.testSwap(r, c, r + 1, c)) return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            testSwap(r1, c1, r2, c2) {
+                const temp = this.grid[r1][c1].colorIdx;
+                const temp2 = this.grid[r2][c2].colorIdx;
+                
+                this.grid[r1][c1].colorIdx = temp2;
+                this.grid[r2][c2].colorIdx = temp;
+                
+                const matches = this.findMatches();
+                
+                this.grid[r1][c1].colorIdx = temp;
+                this.grid[r2][c2].colorIdx = temp2;
+                
+                if (matches.length > 0) {
+                    this.hint = { r1, c1, r2, c2 };
+                    return true;
+                }
+                return false;
+            }
+
+            reshuffle() {
+                this.state = 'SHUFFLING';
+                this.generateGrid();
+                setTimeout(() => this.state = 'IDLE', 500);
+            }
+
+            showCombo() {
+                const el = document.getElementById('combo-display');
+                el.innerText = `COMBO x${this.combo}`;
+                el.classList.remove('animate-combo');
+                void el.offsetWidth; // trigger reflow
+                el.classList.add('animate-combo');
+            }
+
+            createExplosion(x, y, color) {
+                for (let i = 0; i < 12; i++) {
+                    this.particles.push({
+                        x, y,
+                        vx: (Math.random() - 0.5) * 10,
+                        vy: (Math.random() - 0.5) * 10,
+                        life: 1,
+                        color,
+                        size: Math.random() * 5 + 2
+                    });
+                }
+            }
+
+            update(dt) {
+                // Update tiles
+                for (let r = 0; r < CONFIG.rows; r++) {
+                    for (let c = 0; c < CONFIG.cols; c++) {
+                        const t = this.grid[r][c];
+                        if (!t) continue;
+                        
+                        t.x += (t.targetX - t.x) * CONFIG.animSpeed;
+                        t.y += (t.targetY - t.y) * CONFIG.animSpeed;
+
+                        // Idle animation (pulse)
+                        if (this.state === 'IDLE') {
+                            t.scale = 1 + Math.sin(Date.now() * 0.005 + (r + c) * 0.5) * 0.03;
+                        } else {
+                            t.scale += (1 - t.scale) * 0.1;
+                        }
+                    }
+                }
+
+                // Update particles
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.2; // gravity
+                    p.life -= 0.02;
+                    if (p.life <= 0) this.particles.splice(i, 1);
+                }
+
+                // Hint logic
+                if (this.state === 'IDLE' && Date.now() - this.lastInteractionTime > 5000) {
+                    if (!this.hint) this.hasPossibleMoves();
+                }
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Draw Grid Background
+                this.ctx.fillStyle = 'rgba(255,255,255,0.03)';
+                for (let r = 0; r < CONFIG.rows; r++) {
+                    for (let c = 0; c < CONFIG.cols; c++) {
+                        this.ctx.fillRect(c * CONFIG.tileSize + 2, r * CONFIG.tileSize + 2, CONFIG.tileSize - 4, CONFIG.tileSize - 4);
+                    }
+                }
+
+                // Draw Tiles
+                for (let r = 0; r < CONFIG.rows; r++) {
+                    for (let c = 0; c < CONFIG.cols; c++) {
+                        const t = this.grid[r][c];
+                        if (!t) continue;
+
+                        this.ctx.save();
+                        this.ctx.translate(t.x + CONFIG.tileSize/2, t.y + CONFIG.tileSize/2);
+                        this.ctx.scale(t.scale, t.scale);
+                        
+                        // Hint effect
+                        if (this.hint && ( (t.r === this.hint.r1 && t.c === this.hint.c1) || (t.r === this.hint.r2 && t.c === this.hint.c2) )) {
+                            this.ctx.shadowBlur = 15;
+                            this.ctx.shadowColor = 'white';
+                        }
+
+                        this.drawPiece(t);
+                        this.ctx.restore();
+                    }
+                }
+
+                // Draw Particles
+                this.particles.forEach(p => {
+                    this.ctx.globalAlpha = p.life;
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                this.ctx.globalAlpha = 1;
+            }
+
+            drawPiece(t) {
+                const s = CONFIG.tileSize * 0.8;
+                const r = s * 0.2;
+
+                // Main Shape
+                this.ctx.fillStyle = t.color;
+                this.ctx.beginPath();
+                this.ctx.roundRect(-s/2, -s/2, s, s, r);
+                this.ctx.fill();
+
+                // Glossy Effect
+                const grad = this.ctx.createLinearGradient(-s/2, -s/2, s/2, s/2);
+                grad.addColorStop(0, 'rgba(255,255,255,0.4)');
+                grad.addColorStop(0.5, 'rgba(255,255,255,0)');
+                grad.addColorStop(1, 'rgba(0,0,0,0.2)');
+                this.ctx.fillStyle = grad;
+                this.ctx.fill();
+
+                // Special Icons
+                this.ctx.fillStyle = 'white';
+                if (t.type === CONFIG.types.ROCKET_H) {
+                    this.ctx.fillRect(-s/2 + 5, -2, s - 10, 4);
+                } else if (t.type === CONFIG.types.ROCKET_V) {
+                    this.ctx.fillRect(-2, -s/2 + 5, 4, s - 10);
+                } else if (t.type === CONFIG.types.BOMB) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(0, 0, s/4, 0, Math.PI * 2);
+                    this.ctx.fill();
+                } else if (t.type === CONFIG.types.COLOR_BOMB) {
+                    for(let i=0; i<8; i++) {
+                        this.ctx.rotate(Math.PI/4);
+                        this.ctx.fillStyle = CONFIG.colors[i % CONFIG.colors.length];
+                        this.ctx.fillRect(0, -s/2 + 5, 4, s/3);
+                    }
+                }
+            }
+
+            loop() {
+                this.update();
+                this.draw();
+                requestAnimationFrame(() => this.loop());
+            }
+        }
+
+        // Start the game
+        const game = new Game();
+    </script>
+</body>
+</html>

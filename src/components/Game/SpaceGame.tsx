@@ -22,6 +22,7 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
     particles: [] as any[],
     planets: [] as any[],
     stars: [] as any[],
+    powerups: [] as any[],
     score: 0,
     enemiesDefeated: 0,
     level: 1,
@@ -29,6 +30,7 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
     lastTime: 0,
     isMobile: false,
     isShooting: false,
+    shield: 0, // Shield duration
   });
 
   const animationRef = useRef<number>();
@@ -65,6 +67,8 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
     state.enemiesDefeated = 0;
     state.level = 1;
     state.startTime = Date.now();
+    state.powerups = [];
+    state.shield = 0;
     
     // Init stars
     state.stars = Array.from({ length: 150 }, () => ({
@@ -100,6 +104,15 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
         y: -h,
         w, h, hp, maxHp: hp, speed, color,
         vx: (Math.random() - 0.5) * 2 // slight horizontal drift
+      });
+    }
+
+    // Spawn Powerups
+    if (Math.random() < 0.002) {
+      state.powerups.push({
+        x: Math.random() * (canvas.width - 30),
+        y: -30,
+        w: 30, h: 30, speed: 3, type: 'shield', color: '#0ea5e9'
       });
     }
   };
@@ -205,6 +218,25 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
       if (p.y - p.r > canvas.height) state.planets.splice(i, 1);
     }
 
+    // Update Powerups
+    for (let i = state.powerups.length - 1; i >= 0; i--) {
+      const p = state.powerups[i];
+      p.y += p.speed;
+      if (p.y > canvas.height) {
+        state.powerups.splice(i, 1);
+        continue;
+      }
+      // Collision with player
+      const dist = Math.hypot(p.x + p.w/2 - state.player.x, p.y + p.h/2 - state.player.y);
+      if (dist < (p.w/2 + state.player.w/2)) {
+        state.shield = 500; // ~8 seconds at 60fps
+        state.powerups.splice(i, 1);
+        createExplosion(p.x, p.y, p.color, 10);
+      }
+    }
+
+    if (state.shield > 0) state.shield--;
+
     // Update Bullets
     for (let i = state.bullets.length - 1; i >= 0; i--) {
       const b = state.bullets[i];
@@ -232,7 +264,9 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
       // Collision with player
       const distToPlayer = Math.hypot(e.x + e.w/2 - state.player.x, e.y + e.h/2 - state.player.y);
       if (distToPlayer < (e.w/2 + state.player.w/2)) {
-        state.player.hp -= 20;
+        if (state.shield <= 0) {
+          state.player.hp -= 20;
+        }
         createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 20);
         state.enemies.splice(i, 1);
         continue;
@@ -269,7 +303,9 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
       if (!b.isPlayer) {
         const dist = Math.hypot(b.x - state.player.x, b.y - state.player.y);
         if (dist < state.player.w/2) {
-          state.player.hp -= 10;
+          if (state.shield <= 0) {
+            state.player.hp -= 10;
+          }
           createExplosion(b.x, b.y, '#ef4444', 5);
           state.bullets.splice(i, 1);
         }
@@ -322,6 +358,17 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
       ctx.fill();
     });
 
+    // Draw Powerups
+    state.powerups.forEach(p => {
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x + p.w/2, p.y + p.h/2, p.w/2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+
     // Draw Particles
     state.particles.forEach(p => {
       ctx.globalAlpha = p.life;
@@ -363,6 +410,19 @@ const SpaceGame: React.FC<SpaceGameProps> = ({ onClose }) => {
     ctx.save();
     ctx.translate(state.player.x, state.player.y);
     
+    // Shield visual
+    if (state.shield > 0) {
+      ctx.strokeStyle = '#0ea5e9';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 40 + Math.sin(now/100)*5, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = '#0ea5e9';
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
     // Engine glow
     ctx.shadowBlur = 20;
     ctx.shadowColor = '#0ea5e9';

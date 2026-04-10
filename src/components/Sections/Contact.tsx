@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useApp } from '../../context/AppContext';
-import { Download, Github } from 'lucide-react';
+import { Download, Github, ExternalLink } from 'lucide-react';
 
 const RecruitersSection: React.FC = () => {
   const { t } = useApp();
@@ -34,6 +34,15 @@ const RecruitersSection: React.FC = () => {
                 <Download size={20} />
                 {t.recruiters.downloadCV}
               </button>
+              <a
+                href="/match3.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 rounded-2xl bg-secondary text-white font-bold flex items-center gap-3 hover:scale-105 transition-all shadow-xl shadow-secondary/20"
+              >
+                <ExternalLink size={20} />
+                {t.recruiters.playMatchMaster}
+              </a>
               <a
                 href="https://github.com/SebasValenciaV?tab=repositories"
                 target="_blank"

@@ -88,6 +88,7 @@ export interface Translation {
     description: string;
     downloadCV: string;
     viewRepos: string;
+    playMatchMaster: string;
   };
   contact: {
     title: string;
@@ -304,6 +305,7 @@ export const translations: Record<Language, Translation> = {
       description: "He desarrollado proyectos de alto impacto utilizando las tecnologías más modernas del mercado. Mi enfoque está en la escalabilidad, el rendimiento y la experiencia de usuario.",
       downloadCV: "Descargar CV",
       viewRepos: "Ver Repositorios",
+      playMatchMaster: "Jugar Match Master",
     },
     contact: {
       title: "Contacto",
@@ -518,6 +520,7 @@ export const translations: Record<Language, Translation> = {
       description: "I have developed high-impact projects using the most modern technologies on the market. My focus is on scalability, performance, and user experience.",
       downloadCV: "Download CV",
       viewRepos: "View Repositories",
+      playMatchMaster: "Play Match Master",
     },
     contact: {
       title: "Contact",
@@ -732,6 +735,7 @@ export const translations: Record<Language, Translation> = {
       description: "Desenvolvi projetos de alto impacto usando as tecnologias mais modernas do mercado. Meu foco é em escalabilidade, desempenho e experiência do usuário.",
       downloadCV: "Baixar CV",
       viewRepos: "Ver Repositórios",
+      playMatchMaster: "Jogar Match Master",
     },
     contact: {
       title: "Contato",
@@ -946,6 +950,7 @@ export const translations: Record<Language, Translation> = {
       description: "J'ai développé des projets à fort impact en utilisant les technologies les plus modernes du marché. Je me concentre sur l'évolutivité, la performance et l'expérience utilisateur.",
       downloadCV: "Télécharger le CV",
       viewRepos: "Voir les Dépôts",
+      playMatchMaster: "Jouer à Match Master",
     },
     contact: {
       title: "Contact",
@@ -1160,6 +1165,7 @@ export const translations: Record<Language, Translation> = {
       description: "Ho sviluppato progetti ad alto impatto utilizzando le tecnologie più moderne sul mercato. Il mio focus è su scalabilità, prestazioni ed esperienza utente.",
       downloadCV: "Scarica CV",
       viewRepos: "Vedi Repository",
+      playMatchMaster: "Gioca a Match Master",
     },
     contact: {
       title: "Contatto",
@@ -1374,6 +1380,7 @@ export const translations: Record<Language, Translation> = {
       description: "Ich habe wirkungsvolle Projekte mit den modernsten Technologien auf dem Markt entwickelt. Mein Fokus liegt auf Skalierbarkeit, Leistung und Benutzererfahrung.",
       downloadCV: "Lebenslauf herunterladen",
       viewRepos: "Repositories ansehen",
+      playMatchMaster: "Match Master spielen",
     },
     contact: {
       title: "Kontakt",
@@ -1588,6 +1595,7 @@ export const translations: Record<Language, Translation> = {
       description: "市場で最も現代的な技術を使用して、インパクトのあるプロジェクトを開発してきました。スケーラビリティ、パフォーマンス、ユーザーエクスペリエンスに重点を置いています。",
       downloadCV: "CVをダウンロード",
       viewRepos: "リポジトリを見る",
+      playMatchMaster: "Match Masterをプレイ",
     },
     contact: {
       title: "お問い合わせ",
@@ -1802,6 +1810,7 @@ export const translations: Record<Language, Translation> = {
       description: "我使用市场上最现代的技术开发了具有高影响力的项目。我的重点是可扩展性、性能和用户体验。",
       downloadCV: "下载简历",
       viewRepos: "查看代码库",
+      playMatchMaster: "玩 Match Master",
     },
     contact: {
       title: "联系我们",
